@@ -1,0 +1,48 @@
+# Binaries
+terraform-provider-firezone
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+!examples/**/*.tfvars
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive data
+*.auto.tfvars
+users.auto.tfvars
+resources.auto.tfvars
+policies.auto.tfvars
+sites.auto.tfvars
+
+# Test scripts output
+test_*.sh
+debug_*.sh
+install.sh

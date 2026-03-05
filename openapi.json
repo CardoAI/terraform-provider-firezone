@@ -1,0 +1,5221 @@
+{
+  "components": {
+    "responses": {
+
+    },
+    "schemas": {
+      "ClientPutRequest": {
+        "description": "PUT body for updating a Client",
+        "example": {
+          "client": {
+            "name": "John's Macbook Air"
+          }
+        },
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/ClientPut"
+          }
+        },
+        "required": [
+          "client"
+        ],
+        "title": "ClientPutRequest",
+        "type": "object"
+      },
+      "PolicyResponse": {
+        "description": "Response schema for single Policy",
+        "example": {
+          "data": {
+            "description": "Policy to allow something",
+            "group_id": "88eae9ce-9179-48c6-8430-770e38dd4775",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "resource_id": "a9f60587-793c-46ae-8525-597f43ab2fb1"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Policy"
+          }
+        },
+        "title": "PolicyResponse",
+        "type": "object"
+      },
+      "GroupResponse": {
+        "description": "Response schema for single Group",
+        "example": {
+          "data": {
+            "directory_id": null,
+            "entity_type": "group",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "idp_id": null,
+            "inserted_at": "2024-01-15T10:30:00Z",
+            "last_synced_at": null,
+            "name": "Engineering",
+            "updated_at": "2024-01-15T10:30:00Z"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Group"
+          }
+        },
+        "title": "GroupResponse",
+        "type": "object"
+      },
+      "Actor": {
+        "description": "Actor",
+        "example": {
+          "allow_email_otp_sign_in": false,
+          "created_by_directory_id": null,
+          "disabled_at": null,
+          "email": "john.doe@example.com",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "inserted_at": "2024-01-01T00:00:00Z",
+          "last_seen_at": "2024-01-15T10:30:00Z",
+          "name": "John Doe",
+          "type": "account_admin_user",
+          "updated_at": "2024-01-15T10:30:00Z"
+        },
+        "properties": {
+          "allow_email_otp_sign_in": {
+            "default": false,
+            "description": "Allow Email OTP Sign In",
+            "type": "boolean"
+          },
+          "created_by_directory_id": {
+            "description": "Directory ID that created this actor",
+            "nullable": true,
+            "type": "string"
+          },
+          "disabled_at": {
+            "description": "When the actor was disabled",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "description": "Actor Email",
+            "type": "string"
+          },
+          "id": {
+            "description": "Actor ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "When the actor was created",
+            "format": "date-time",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "description": "Last time the actor was seen",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "description": "Actor Name",
+            "pattern": "[a-zA-Z][a-zA-Z0-9_]+",
+            "type": "string"
+          },
+          "type": {
+            "description": "Actor Type",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "When the actor was last updated",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "type"
+        ],
+        "title": "Actor",
+        "type": "object"
+      },
+      "EmailOTPAuthProviderResponse": {
+        "description": "Response schema for single Email OTP Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Email OTP"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EmailOTPAuthProvider"
+          }
+        },
+        "title": "EmailOTPAuthProviderResponse",
+        "type": "object"
+      },
+      "EntraAuthProviderResponse": {
+        "description": "Response schema for single Entra Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Entra"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EntraAuthProvider"
+          }
+        },
+        "title": "EntraAuthProviderResponse",
+        "type": "object"
+      },
+      "OktaAuthProvider": {
+        "description": "Okta Auth Provider",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "Okta",
+          "okta_domain": "example.okta.com"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Client ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_default": {
+            "description": "Whether provider is default",
+            "type": "boolean"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "okta_domain": {
+            "description": "Okta domain",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "OktaAuthProvider",
+        "type": "object"
+      },
+      "Policy": {
+        "description": "Policy",
+        "example": {
+          "description": "Policy to allow something",
+          "group_id": "88eae9ce-9179-48c6-8430-770e38dd4775",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "resource_id": "a9f60587-793c-46ae-8525-597f43ab2fb1"
+        },
+        "properties": {
+          "description": {
+            "description": "Policy Description",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Group ID",
+            "type": "string"
+          },
+          "id": {
+            "description": "Policy ID",
+            "type": "string"
+          },
+          "resource_id": {
+            "description": "Resource ID",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "title": "Policy",
+        "type": "object"
+      },
+      "GatewaysResponse": {
+        "description": "Response schema for multiple Gateways",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "ipv4": "1.2.3.4",
+              "ipv6": "",
+              "name": "vpc-us-east",
+              "online": true
+            },
+            {
+              "id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+              "ipv4": "5.6.7.8",
+              "ipv6": "",
+              "name": "vpc-us-west",
+              "online": true
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Gateways details",
+            "items": {
+              "$ref": "#/components/schemas/Gateway"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "GatewaysResponse",
+        "type": "object"
+      },
+      "MembershipPatchRequest": {
+        "description": "PATCH body for updating Memberships",
+        "example": {
+          "memberships": {
+            "add": [
+              "1234-1234"
+            ],
+            "remove": [
+              "2345-2345"
+            ]
+          }
+        },
+        "properties": {
+          "memberships": {
+            "properties": {
+              "add": {
+                "description": "Array of Actor IDs",
+                "items": {
+                  "description": "Actor ID",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "remove": {
+                "description": "Array of Actor IDs",
+                "items": {
+                  "description": "Actor ID",
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "memberships"
+        ],
+        "title": "MembershipPatchRequest",
+        "type": "object"
+      },
+      "OktaAuthProviderListResponse": {
+        "description": "Response schema for multiple Okta Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Okta"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Okta Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/OktaAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "OktaAuthProviderListResponse",
+        "type": "object"
+      },
+      "AccountLimit": {
+        "description": "Account limit with usage information",
+        "properties": {
+          "available": {
+            "description": "Remaining available count",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Total allowed count",
+            "type": "integer"
+          },
+          "used": {
+            "description": "Current usage count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "used",
+          "available",
+          "total"
+        ],
+        "title": "AccountLimit",
+        "type": "object"
+      },
+      "ExternalIdentityListResponse": {
+        "description": "Response schema for multiple External Identities",
+        "example": {
+          "data": [
+            {
+              "account_id": "5e6f7d8c-9b0a-1c2d-3e4f-5a6b7c8d9e0f",
+              "actor_id": "8f44a02b-b8eb-406f-8202-4274bf60ebd0",
+              "directory_id": "9f8e7d6c-5b4a-3c2b-1a0e-9f8e7d6c5b4a",
+              "family_name": "Doe",
+              "given_name": "John",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "idp_id": "2551705710219359",
+              "inserted_at": "2025-01-15T12:34:56.789Z",
+              "issuer": "https://accounts.google.com",
+              "last_synced_at": "2025-01-15T12:34:56.789Z",
+              "name": "John Doe",
+              "picture": "https://example.com/avatar1.jpg"
+            },
+            {
+              "account_id": "5e6f7d8c-9b0a-1c2d-3e4f-5a6b7c8d9e0f",
+              "actor_id": "38c92cda-1ddb-45b3-9d1a-7efc375e00c1",
+              "directory_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+              "family_name": "Smith",
+              "given_name": "Jane",
+              "id": "8a70eb96-e74b-4cdc-91b8-48c05ef74d4c",
+              "idp_id": "2638957392736483",
+              "inserted_at": "2025-01-15T11:22:33.456Z",
+              "issuer": "https://company.okta.com",
+              "last_synced_at": "2025-01-15T11:22:33.456Z",
+              "name": "Jane Smith",
+              "picture": "https://example.com/avatar2.jpg"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "External Identity details",
+            "items": {
+              "$ref": "#/components/schemas/ExternalIdentity"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ExternalIdentityListResponse",
+        "type": "object"
+      },
+      "ActorRequest": {
+        "description": "POST body for creating an Actor",
+        "example": {
+          "actor": {
+            "allow_email_otp_sign_in": false,
+            "email": "joe.user@example.com",
+            "name": "Joe User",
+            "type": "account_admin_user"
+          }
+        },
+        "properties": {
+          "actor": {
+            "$ref": "#/components/schemas/Actor"
+          }
+        },
+        "required": [
+          "actor"
+        ],
+        "title": "ActorRequest",
+        "type": "object"
+      },
+      "EmailOTPAuthProvider": {
+        "description": "Email OTP Auth Provider",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "issuer": "firezone",
+          "name": "Email OTP"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "EmailOTPAuthProvider",
+        "type": "object"
+      },
+      "ActorResponse": {
+        "description": "Response schema for single Actor",
+        "example": {
+          "data": {
+            "allow_email_otp_sign_in": false,
+            "created_by_directory_id": null,
+            "disabled_at": null,
+            "email": "john.doe@example.com",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "inserted_at": "2024-01-01T00:00:00Z",
+            "last_seen_at": "2024-01-15T10:30:00Z",
+            "name": "John Doe",
+            "type": "account_admin_user",
+            "updated_at": "2024-01-15T10:30:00Z"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Actor"
+          }
+        },
+        "title": "ActorResponse",
+        "type": "object"
+      },
+      "ResourceListResponse": {
+        "description": "Response schema for multiple Resources",
+        "example": {
+          "data": [
+            {
+              "address": "10.0.0.10",
+              "address_description": "Production Database",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Prod DB",
+              "type": "ip"
+            },
+            {
+              "address": "10.0.0.20",
+              "address_description": "Production Admin Dashboard",
+              "id": "3b9451c9-5616-48f8-827f-009ace22d015",
+              "name": "Admin Dashboard",
+              "type": "ip"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Resource details",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ResourceListResponse",
+        "type": "object"
+      },
+      "GatewayToken": {
+        "description": "Gateway Token",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "token": "secret-token-here"
+        },
+        "properties": {
+          "id": {
+            "description": "Gateway Token ID",
+            "type": "string"
+          },
+          "token": {
+            "description": "Gateway Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "token"
+        ],
+        "title": "GatewayToken",
+        "type": "object"
+      },
+      "UserpassAuthProvider": {
+        "description": "Username & Password Auth Provider",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "issuer": "firezone",
+          "name": "Username & Password"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "UserpassAuthProvider",
+        "type": "object"
+      },
+      "SiteListResponse": {
+        "description": "Response schema for multiple Sites",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "vpc-us-east"
+            },
+            {
+              "id": "6301d7d2-4938-4123-87de-282c01cca656",
+              "name": "vpc-us-west"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Site details",
+            "items": {
+              "$ref": "#/components/schemas/Site"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "SiteListResponse",
+        "type": "object"
+      },
+      "GoogleDirectoryListResponse": {
+        "description": "Response schema for multiple Google Directories",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Google"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Google Directory details",
+            "items": {
+              "$ref": "#/components/schemas/GoogleDirectory"
+            },
+            "type": "array"
+          }
+        },
+        "title": "GoogleDirectoryListResponse",
+        "type": "object"
+      },
+      "GoogleAuthProviderListResponse": {
+        "description": "Response schema for multiple Google Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Google"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Google Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "GoogleAuthProviderListResponse",
+        "type": "object"
+      },
+      "ActorsResponse": {
+        "description": "Response schema for multiple Actors",
+        "example": {
+          "data": [
+            {
+              "allow_email_otp_sign_in": false,
+              "created_by_directory_id": null,
+              "disabled_at": null,
+              "email": "john.doe@example.com",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "inserted_at": "2024-01-01T00:00:00Z",
+              "last_seen_at": "2024-01-15T10:30:00Z",
+              "name": "John Doe",
+              "type": "account_admin_user",
+              "updated_at": "2024-01-15T10:30:00Z"
+            },
+            {
+              "allow_email_otp_sign_in": true,
+              "created_by_directory_id": "98776234-1234-5678-9012-345678901234",
+              "disabled_at": null,
+              "email": "jane.smith@example.com",
+              "id": "84e7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "inserted_at": "2024-01-02T00:00:00Z",
+              "last_seen_at": "2024-01-14T15:45:00Z",
+              "name": "Jane Smith",
+              "type": "account_user",
+              "updated_at": "2024-01-14T15:45:00Z"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Actors details",
+            "items": {
+              "$ref": "#/components/schemas/Actor"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ActorsResponse",
+        "type": "object"
+      },
+      "GoogleDirectory": {
+        "description": "Google Directory",
+        "example": {
+          "domain": "example.com",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "Google"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "disabled_reason": {
+            "description": "Reason for disabling",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Google Workspace domain",
+            "type": "string"
+          },
+          "error": {
+            "description": "Last error message",
+            "type": "string"
+          },
+          "error_count": {
+            "description": "Error count",
+            "type": "integer"
+          },
+          "error_emailed_at": {
+            "description": "Error email timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "id": {
+            "description": "Directory ID",
+            "type": "string"
+          },
+          "impersonation_email": {
+            "description": "Impersonation email",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_disabled": {
+            "description": "Whether directory is disabled",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Directory name",
+            "type": "string"
+          },
+          "synced_at": {
+            "description": "Last sync timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "GoogleDirectory",
+        "type": "object"
+      },
+      "Group": {
+        "description": "Group",
+        "example": {
+          "directory_id": null,
+          "entity_type": "group",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "idp_id": null,
+          "inserted_at": "2024-01-15T10:30:00Z",
+          "last_synced_at": null,
+          "name": "Engineering",
+          "updated_at": "2024-01-15T10:30:00Z"
+        },
+        "properties": {
+          "directory_id": {
+            "description": "Directory ID this group belongs to",
+            "nullable": true,
+            "type": "string"
+          },
+          "entity_type": {
+            "description": "Entity type",
+            "enum": [
+              "group",
+              "org_unit"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Group ID",
+            "type": "string"
+          },
+          "idp_id": {
+            "description": "Identity provider ID for synced groups",
+            "nullable": true,
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "last_synced_at": {
+            "description": "Last sync timestamp for synced groups",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "description": "Group Name",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Last update timestamp",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "entity_type",
+          "inserted_at",
+          "updated_at"
+        ],
+        "title": "Group",
+        "type": "object"
+      },
+      "GatewayResponse": {
+        "description": "Response schema for single Gateway",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "ipv4": "1.2.3.4",
+            "ipv6": "",
+            "name": "vpc-us-east",
+            "online": true
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Gateway"
+          }
+        },
+        "title": "GatewayResponse",
+        "type": "object"
+      },
+      "ClientPut": {
+        "description": "Put schema for updating a single Client",
+        "example": {
+          "name": "John's Macbook Air"
+        },
+        "properties": {
+          "name": {
+            "description": "Client Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ClientPut",
+        "type": "object"
+      },
+      "Site ID": {
+        "description": "Site to connect the Resource to",
+        "title": "Site ID",
+        "type": "string"
+      },
+      "EntraDirectoryListResponse": {
+        "description": "Response schema for multiple Entra Directories",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Entra"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Entra Directory details",
+            "items": {
+              "$ref": "#/components/schemas/EntraDirectory"
+            },
+            "type": "array"
+          }
+        },
+        "title": "EntraDirectoryListResponse",
+        "type": "object"
+      },
+      "EntraAuthProviderListResponse": {
+        "description": "Response schema for multiple Entra Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Entra"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Entra Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/EntraAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "EntraAuthProviderListResponse",
+        "type": "object"
+      },
+      "ClientsResponse": {
+        "description": "Response schema for multiple Clients",
+        "example": {
+          "data": [
+            {
+              "actor_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+              "created_at": "2025-01-01T00:00:00Z",
+              "device_serial": "GCCFX0DBQ6L5",
+              "device_uuid": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
+              "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+              "firebase_installation_id": null,
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "identifier_for_vendor": null,
+              "ipv4": "100.64.0.1",
+              "ipv6": "fd00:2021:1111::1",
+              "last_seen_at": "2025-01-01T00:00:00Z",
+              "last_seen_remote_ip": "1.2.3.4",
+              "last_seen_remote_ip_location_city": "San Francisco",
+              "last_seen_remote_ip_location_lat": 37.7749,
+              "last_seen_remote_ip_location_lon": -122.4194,
+              "last_seen_remote_ip_location_region": "California",
+              "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+              "last_seen_version": "1.4.5",
+              "name": "John's Macbook Air",
+              "online": true,
+              "updated_at": "2025-01-01T00:00:00Z",
+              "verified_at": "2025-01-01T00:00:00Z"
+            },
+            {
+              "actor_id": "2ecc106b-75c1-48a5-846c-14782180c1ff",
+              "created_at": "2025-01-01T00:00:00Z",
+              "device_serial": null,
+              "device_uuid": null,
+              "external_id": "6c37c0042f40bbb16e007d0d6c8e77c0ac2cab3cc3b923c42d1157a934e436ac",
+              "firebase_installation_id": null,
+              "id": "9a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "identifier_for_vendor": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
+              "ipv4": "100.64.0.2",
+              "ipv6": "fd00:2021:1111::2",
+              "last_seen_at": "2025-01-01T00:00:00Z",
+              "last_seen_remote_ip": "1.2.3.4",
+              "last_seen_remote_ip_location_city": "San Francisco",
+              "last_seen_remote_ip_location_lat": 37.7749,
+              "last_seen_remote_ip_location_lon": -122.4194,
+              "last_seen_remote_ip_location_region": "California",
+              "last_seen_user_agent": "iOS/18.3.1 connlib/1.4.6 (24.3.0)",
+              "last_seen_version": "1.4.6",
+              "name": "iPad",
+              "online": false,
+              "updated_at": "2025-01-01T00:00:00Z",
+              "verified_at": null
+            }
+          ],
+          "metadata": {
+            "limit": 2,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Clients details",
+            "items": {
+              "$ref": "#/components/schemas/Client"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ClientsResponse",
+        "type": "object"
+      },
+      "ExternalIdentity": {
+        "description": "External Identity",
+        "example": {
+          "account_id": "5e6f7d8c-9b0a-1c2d-3e4f-5a6b7c8d9e0f",
+          "actor_id": "cdfa97e6-cca1-41db-8fc7-864daedb46df",
+          "directory_id": "9f8e7d6c-5b4a-3c2b-1a0e-9f8e7d6c5b4a",
+          "family_name": "Doe",
+          "given_name": "John",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "idp_id": "2551705710219359",
+          "inserted_at": "2025-01-15T12:34:56.789Z",
+          "issuer": "https://accounts.google.com",
+          "last_synced_at": "2025-01-15T12:34:56.789Z",
+          "name": "John Doe",
+          "picture": "https://example.com/avatar.jpg"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "actor_id": {
+            "description": "Actor ID",
+            "type": "string"
+          },
+          "directory_id": {
+            "description": "Directory UUID reference",
+            "type": "string"
+          },
+          "family_name": {
+            "description": "Family name",
+            "type": "string"
+          },
+          "firezone_avatar_url": {
+            "description": "Firezone-hosted avatar URL",
+            "type": "string"
+          },
+          "given_name": {
+            "description": "Given name",
+            "type": "string"
+          },
+          "id": {
+            "description": "External Identity ID",
+            "type": "string"
+          },
+          "idp_id": {
+            "description": "IDP-specific identifier for this identity",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "issuer": {
+            "description": "Identity issuer URL (e.g., 'https://accounts.google.com', 'https://company.okta.com')",
+            "type": "string"
+          },
+          "last_synced_at": {
+            "description": "Last sync timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "middle_name": {
+            "description": "Middle name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Full name",
+            "type": "string"
+          },
+          "nickname": {
+            "description": "Nickname",
+            "type": "string"
+          },
+          "picture": {
+            "description": "Profile picture URL",
+            "type": "string"
+          },
+          "preferred_username": {
+            "description": "Preferred username",
+            "type": "string"
+          },
+          "profile": {
+            "description": "Profile URL",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "actor_id",
+          "issuer",
+          "idp_id"
+        ],
+        "title": "ExternalIdentity",
+        "type": "object"
+      },
+      "GroupRequest": {
+        "description": "POST body for creating an Group",
+        "example": {
+          "group": {
+            "name": "Engineering"
+          }
+        },
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/Group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "GroupRequest",
+        "type": "object"
+      },
+      "GoogleDirectoryResponse": {
+        "description": "Response schema for single Google Directory",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Google"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GoogleDirectory"
+          }
+        },
+        "title": "GoogleDirectoryResponse",
+        "type": "object"
+      },
+      "Site": {
+        "description": "Site",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "vpc-us-east"
+        },
+        "properties": {
+          "id": {
+            "description": "Site ID",
+            "type": "string"
+          },
+          "name": {
+            "description": "Site Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "Site",
+        "type": "object"
+      },
+      "Client": {
+        "description": "Client",
+        "example": {
+          "actor_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+          "created_at": "2025-01-01T00:00:00Z",
+          "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "ipv4": "100.64.0.1",
+          "ipv6": "fd00:2021:1111::1",
+          "last_seen_at": "2025-01-01T00:00:00Z",
+          "last_seen_remote_ip": "1.2.3.4",
+          "last_seen_remote_ip_location_city": "San Francisco",
+          "last_seen_remote_ip_location_lat": 37.7749,
+          "last_seen_remote_ip_location_lon": -122.4194,
+          "last_seen_remote_ip_location_region": "California",
+          "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+          "last_seen_version": "1.4.5",
+          "name": "John's Macbook Air",
+          "online": true,
+          "updated_at": "2025-01-01T00:00:00Z"
+        },
+        "properties": {
+          "actor_id": {
+            "description": "Actor ID",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Client creation timestamp",
+            "type": "string"
+          },
+          "device_serial": {
+            "description": "Device manufacturer serial number (unavailable for mobile devices)",
+            "type": "string"
+          },
+          "device_uuid": {
+            "description": "Device manufacturer UUID (unavailable for mobile devices)",
+            "type": "string"
+          },
+          "firebase_installation_id": {
+            "description": "Firebase installation ID (Android only)",
+            "type": "string"
+          },
+          "id": {
+            "description": "Client ID",
+            "type": "string"
+          },
+          "identifier_for_vendor": {
+            "description": "App installation ID (iOS only)",
+            "type": "string"
+          },
+          "ipv4": {
+            "description": "Tunnel IPv4 Address of Client",
+            "type": "string"
+          },
+          "ipv6": {
+            "description": "Tunnel IPv6 Address of Client",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "description": "Last seen at",
+            "type": "string"
+          },
+          "last_seen_remote_ip": {
+            "description": "Last seen remote IP",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_city": {
+            "description": "Last seen remote IP location city",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_lat": {
+            "description": "Last seen remote IP location latitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_lon": {
+            "description": "Last seen remote IP location longitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_region": {
+            "description": "Last seen remote IP location region",
+            "type": "string"
+          },
+          "last_seen_user_agent": {
+            "description": "Last seen user agent",
+            "type": "string"
+          },
+          "last_seen_version": {
+            "description": "Last seen version",
+            "type": "string"
+          },
+          "name": {
+            "description": "Client Name",
+            "type": "string"
+          },
+          "online": {
+            "description": "Online status of Client",
+            "type": "boolean"
+          },
+          "updated_at": {
+            "description": "Client update timestamp",
+            "type": "string"
+          },
+          "verified_at": {
+            "description": "Client verification timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "actor_id",
+          "external_id",
+          "name",
+          "ipv4",
+          "ipv6",
+          "online",
+          "last_seen_user_agent",
+          "last_seen_remote_ip",
+          "last_seen_remote_ip_location_region",
+          "last_seen_remote_ip_location_city",
+          "last_seen_remote_ip_location_lat",
+          "last_seen_remote_ip_location_lon",
+          "last_seen_version",
+          "last_seen_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Client",
+        "type": "object"
+      },
+      "OktaDirectoryListResponse": {
+        "description": "Response schema for multiple Okta Directories",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Okta"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Okta Directory details",
+            "items": {
+              "$ref": "#/components/schemas/OktaDirectory"
+            },
+            "type": "array"
+          }
+        },
+        "title": "OktaDirectoryListResponse",
+        "type": "object"
+      },
+      "GoogleAuthProvider": {
+        "description": "Google Auth Provider",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "issuer": "https://accounts.google.com",
+          "name": "Google"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_default": {
+            "description": "Whether provider is default",
+            "type": "boolean"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "GoogleAuthProvider",
+        "type": "object"
+      },
+      "ResourceResponse": {
+        "description": "Response schema for single Resource",
+        "example": {
+          "data": {
+            "address": "10.0.0.10",
+            "address_description": "Production Database",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Prod DB",
+            "type": "ip"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Resource"
+          }
+        },
+        "title": "ResourceResponse",
+        "type": "object"
+      },
+      "DeletedGatewayTokenResponse": {
+        "description": "Response schema for a deleted Gateway Token",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205"
+          }
+        },
+        "properties": {
+          "data": {
+            "properties": {
+              "id": {
+                "description": "Gateway Token ID",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "title": "DeletedGatewayTokenResponse",
+        "type": "object"
+      },
+      "AccountLimits": {
+        "description": "Account limits and usage information",
+        "properties": {
+          "account_admin_users": {
+            "$ref": "#/components/schemas/AccountLimit"
+          },
+          "monthly_active_users": {
+            "$ref": "#/components/schemas/AccountLimit"
+          },
+          "service_accounts": {
+            "$ref": "#/components/schemas/AccountLimit"
+          },
+          "sites": {
+            "$ref": "#/components/schemas/AccountLimit"
+          },
+          "users": {
+            "$ref": "#/components/schemas/AccountLimit"
+          }
+        },
+        "title": "AccountLimits",
+        "type": "object"
+      },
+      "ClientResponse": {
+        "description": "Response schema for single Client",
+        "example": {
+          "data": {
+            "actor_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+            "created_at": "2025-01-01T00:00:00Z",
+            "device_serial": "GCCFX0DBQ6L5",
+            "device_uuid": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
+            "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+            "firebase_installation_id": null,
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "identifier_for_vendor": null,
+            "ipv4": "100.64.0.1",
+            "ipv6": "fd00:2021:1111::1",
+            "last_seen_at": "2025-01-01T00:00:00Z",
+            "last_seen_remote_ip": "1.2.3.4",
+            "last_seen_remote_ip_location_city": "San Francisco",
+            "last_seen_remote_ip_location_lat": 37.7749,
+            "last_seen_remote_ip_location_lon": -122.4194,
+            "last_seen_remote_ip_location_region": "California",
+            "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+            "last_seen_version": "1.4.5",
+            "name": "John's Macbook Air",
+            "online": true,
+            "updated_at": "2025-01-01T00:00:00Z",
+            "verified_at": "2025-01-01T00:00:00Z"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Client"
+          }
+        },
+        "title": "ClientResponse",
+        "type": "object"
+      },
+      "MembershipListResponse": {
+        "description": "Response schema for Memberships",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "John Doe",
+              "type": "account_user"
+            },
+            {
+              "id": "cc9f561a-444d-4083-ab38-0abc6cf2314c",
+              "name": "Jane Smith",
+              "type": "account_admin_user"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Membership details",
+            "items": {
+              "$ref": "#/components/schemas/Membership"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "MembershipListResponse",
+        "type": "object"
+      },
+      "ExternalIdentityResponse": {
+        "description": "Response schema for single External Identity",
+        "example": {
+          "data": {
+            "account_id": "5e6f7d8c-9b0a-1c2d-3e4f-5a6b7c8d9e0f",
+            "actor_id": "cdfa97e6-cca1-41db-8fc7-864daedb46df",
+            "directory_id": "9f8e7d6c-5b4a-3c2b-1a0e-9f8e7d6c5b4a",
+            "family_name": "Doe",
+            "given_name": "John",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "idp_id": "2551705710219359",
+            "inserted_at": "2025-01-15T12:34:56.789Z",
+            "issuer": "https://accounts.google.com",
+            "last_synced_at": "2025-01-15T12:34:56.789Z",
+            "name": "John Doe",
+            "picture": "https://example.com/avatar.jpg"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ExternalIdentity"
+          }
+        },
+        "title": "ExternalIdentityResponse",
+        "type": "object"
+      },
+      "SiteRequest": {
+        "description": "POST body for creating a Site",
+        "example": {
+          "site": {
+            "name": "vpc-us-east"
+          }
+        },
+        "properties": {
+          "site": {
+            "$ref": "#/components/schemas/Site"
+          }
+        },
+        "required": [
+          "site"
+        ],
+        "title": "SiteRequest",
+        "type": "object"
+      },
+      "OktaDirectoryResponse": {
+        "description": "Response schema for single Okta Directory",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Okta"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OktaDirectory"
+          }
+        },
+        "title": "OktaDirectoryResponse",
+        "type": "object"
+      },
+      "GatewayTokenResponse": {
+        "description": "Response schema for a new Gateway Token",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "token": "secret-token-here"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GatewayToken"
+          }
+        },
+        "title": "GatewayTokenResponse",
+        "type": "object"
+      },
+      "EntraAuthProvider": {
+        "description": "Entra Auth Provider",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "issuer": "https://login.microsoftonline.com/tenant-id/v2.0",
+          "name": "Entra"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_default": {
+            "description": "Whether provider is default",
+            "type": "boolean"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "EntraAuthProvider",
+        "type": "object"
+      },
+      "Membership": {
+        "description": "Membership",
+        "example": [
+          {
+            "id": "7cb89288-1fb3-433e-a522-2d087e45988d",
+            "name": "John Doe",
+            "type": "account_user"
+          }
+        ],
+        "items": {
+          "properties": {
+            "id": {
+              "description": "Actor ID",
+              "type": "string"
+            },
+            "name": {
+              "description": "Actor Name",
+              "type": "string"
+            },
+            "type": {
+              "description": "Actor Type",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "title": "Membership",
+        "type": "array"
+      },
+      "Account": {
+        "description": "Account schema",
+        "properties": {
+          "id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "legal_name": {
+            "description": "Account legal name",
+            "type": "string"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/AccountLimits"
+          },
+          "name": {
+            "description": "Account name",
+            "type": "string"
+          },
+          "slug": {
+            "description": "Account slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ],
+        "title": "Account",
+        "type": "object"
+      },
+      "ResourceRequest": {
+        "description": "POST body for creating a Resource",
+        "example": {
+          "resource": {
+            "address": "10.0.0.10",
+            "address_description": "Production Database",
+            "name": "Prod DB",
+            "site_id": "0642e09d-b3a2-47e4-9cd1-c2195faeeb67",
+            "type": "ip"
+          }
+        },
+        "properties": {
+          "resource": {
+            "properties": {
+              "address": {
+                "description": "Resource address",
+                "type": "string"
+              },
+              "address_description": {
+                "description": "Resource address description",
+                "type": "string"
+              },
+              "id": {
+                "description": "Resource ID",
+                "type": "string"
+              },
+              "ip_stack": {
+                "description": "IP stack type. Only supported for DNS resources.",
+                "enum": [
+                  "ipv4_only",
+                  "ipv6_only",
+                  "dual"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "description": "Resource name",
+                "type": "string"
+              },
+              "site_id": {
+                "description": "Site to connect the Resource to",
+                "title": "Site ID",
+                "type": "string"
+              },
+              "type": {
+                "description": "Resource type",
+                "enum": [
+                  "cidr",
+                  "ip",
+                  "dns"
+                ],
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "resource"
+        ],
+        "title": "ResourceRequest",
+        "type": "object"
+      },
+      "OIDCAuthProviderListResponse": {
+        "description": "Response schema for multiple OIDC Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "OIDC Provider"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "OIDC Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/OIDCAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "OIDCAuthProviderListResponse",
+        "type": "object"
+      },
+      "UserpassAuthProviderListResponse": {
+        "description": "Response schema for multiple Userpass Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Username & Password"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Userpass Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/UserpassAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "UserpassAuthProviderListResponse",
+        "type": "object"
+      },
+      "PolicyRequest": {
+        "description": "POST body for creating a Policy",
+        "example": {
+          "policy": {
+            "description": "Policy to allow something",
+            "group_id": "88eae9ce-9179-48c6-8430-770e38dd4775",
+            "resource_id": "a9f60587-793c-46ae-8525-597f43ab2fb1"
+          }
+        },
+        "properties": {
+          "policy": {
+            "$ref": "#/components/schemas/Policy"
+          }
+        },
+        "required": [
+          "policy"
+        ],
+        "title": "PolicyRequest",
+        "type": "object"
+      },
+      "EmailOTPAuthProviderListResponse": {
+        "description": "Response schema for multiple Email OTP Auth Providers",
+        "example": {
+          "data": [
+            {
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "name": "Email OTP"
+            }
+          ]
+        },
+        "properties": {
+          "data": {
+            "description": "Email OTP Auth Provider details",
+            "items": {
+              "$ref": "#/components/schemas/EmailOTPAuthProvider"
+            },
+            "type": "array"
+          }
+        },
+        "title": "EmailOTPAuthProviderListResponse",
+        "type": "object"
+      },
+      "OktaAuthProviderResponse": {
+        "description": "Response schema for single Okta Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Okta"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OktaAuthProvider"
+          }
+        },
+        "title": "OktaAuthProviderResponse",
+        "type": "object"
+      },
+      "EntraDirectoryResponse": {
+        "description": "Response schema for single Entra Directory",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Entra"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EntraDirectory"
+          }
+        },
+        "title": "EntraDirectoryResponse",
+        "type": "object"
+      },
+      "OIDCAuthProviderResponse": {
+        "description": "Response schema for single OIDC Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "OIDC Provider"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OIDCAuthProvider"
+          }
+        },
+        "title": "OIDCAuthProviderResponse",
+        "type": "object"
+      },
+      "MembershipPutRequest": {
+        "description": "PUT body for updating Memberships",
+        "example": {
+          "memberships": [
+            {
+              "actor_id": "1234-1234"
+            },
+            {
+              "actor_id": "2345-2345"
+            }
+          ]
+        },
+        "properties": {
+          "memberships": {
+            "items": {
+              "properties": {
+                "actor_id": {
+                  "description": "Actor ID",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "memberships"
+        ],
+        "title": "MembershipPutRequest",
+        "type": "object"
+      },
+      "Resource": {
+        "description": "Resource",
+        "example": {
+          "address": "10.0.0.10",
+          "address_description": "Production Database",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "Prod DB",
+          "type": "ip"
+        },
+        "properties": {
+          "address": {
+            "description": "Resource address",
+            "type": "string"
+          },
+          "address_description": {
+            "description": "Resource address description",
+            "type": "string"
+          },
+          "id": {
+            "description": "Resource ID",
+            "type": "string"
+          },
+          "ip_stack": {
+            "description": "IP stack type. Only supported for DNS resources.",
+            "enum": [
+              "ipv4_only",
+              "ipv6_only",
+              "dual"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "description": "Resource name",
+            "type": "string"
+          },
+          "site_id": {
+            "description": "Site to connect the Resource to",
+            "title": "Site ID",
+            "type": "string"
+          },
+          "type": {
+            "description": "Resource type",
+            "enum": [
+              "cidr",
+              "ip",
+              "dns"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "site_id"
+        ],
+        "title": "Resource",
+        "type": "object"
+      },
+      "AccountResponse": {
+        "description": "Response schema for Account",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Account"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "AccountResponse",
+        "type": "object"
+      },
+      "UserpassAuthProviderResponse": {
+        "description": "Response schema for single Userpass Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Username & Password"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UserpassAuthProvider"
+          }
+        },
+        "title": "UserpassAuthProviderResponse",
+        "type": "object"
+      },
+      "SiteResponse": {
+        "description": "Response schema for single Site",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "vpc-us-east"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Site"
+          }
+        },
+        "title": "SiteResponse",
+        "type": "object"
+      },
+      "OktaDirectory": {
+        "description": "Okta Directory",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "Okta",
+          "okta_domain": "example.okta.com"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Client ID",
+            "type": "string"
+          },
+          "disabled_reason": {
+            "description": "Reason for disabling",
+            "type": "string"
+          },
+          "error": {
+            "description": "Last error message",
+            "type": "string"
+          },
+          "error_count": {
+            "description": "Error count",
+            "type": "integer"
+          },
+          "error_emailed_at": {
+            "description": "Error email timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "id": {
+            "description": "Directory ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_disabled": {
+            "description": "Whether directory is disabled",
+            "type": "boolean"
+          },
+          "kid": {
+            "description": "Key ID",
+            "type": "string"
+          },
+          "name": {
+            "description": "Directory name",
+            "type": "string"
+          },
+          "okta_domain": {
+            "description": "Okta domain",
+            "type": "string"
+          },
+          "synced_at": {
+            "description": "Last sync timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "OktaDirectory",
+        "type": "object"
+      },
+      "EntraDirectory": {
+        "description": "Entra Directory",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "Entra",
+          "tenant_id": "12345678-1234-1234-1234-123456789012"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "disabled_reason": {
+            "description": "Reason for disabling",
+            "type": "string"
+          },
+          "error": {
+            "description": "Last error message",
+            "type": "string"
+          },
+          "error_count": {
+            "description": "Error count",
+            "type": "integer"
+          },
+          "error_emailed_at": {
+            "description": "Error email timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "id": {
+            "description": "Directory ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_disabled": {
+            "description": "Whether directory is disabled",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Directory name",
+            "type": "string"
+          },
+          "sync_all_groups": {
+            "description": "Sync all groups",
+            "type": "boolean"
+          },
+          "synced_at": {
+            "description": "Last sync timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "tenant_id": {
+            "description": "Microsoft Entra tenant ID",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "EntraDirectory",
+        "type": "object"
+      },
+      "OIDCAuthProvider": {
+        "description": "OIDC Auth Provider",
+        "example": {
+          "client_id": "my-client-id",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "name": "OIDC Provider"
+        },
+        "properties": {
+          "account_id": {
+            "description": "Account ID",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Client ID",
+            "type": "string"
+          },
+          "client_session_lifetime_secs": {
+            "description": "Client session lifetime in seconds",
+            "type": "integer"
+          },
+          "context": {
+            "description": "Context",
+            "enum": [
+              "clients_and_portal",
+              "clients_only",
+              "portal_only"
+            ],
+            "type": "string"
+          },
+          "discovery_document_uri": {
+            "description": "Discovery document URI",
+            "type": "string"
+          },
+          "id": {
+            "description": "Provider ID",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "datetime",
+            "type": "string"
+          },
+          "is_default": {
+            "description": "Whether provider is default",
+            "type": "boolean"
+          },
+          "is_disabled": {
+            "description": "Whether provider is disabled",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Provider name",
+            "type": "string"
+          },
+          "portal_session_lifetime_secs": {
+            "description": "Portal session lifetime in seconds",
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "OIDCAuthProvider",
+        "type": "object"
+      },
+      "MembershipResponse": {
+        "description": "Response schema for Membership Updates",
+        "example": {
+          "data": {
+            "actor_ids": [
+              "4ddfa557-7dfc-484f-894c-2024ec3fe9f7",
+              "89d22f71-939d-442d-b148-897b730adfb4"
+            ]
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Memberships",
+            "properties": {
+              "actor_ids": {
+                "description": "Actor IDs",
+                "items": {
+                  "description": "Actor ID",
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "title": "MembershipResponse",
+        "type": "object"
+      },
+      "GroupListResponse": {
+        "description": "Response schema for multiple Groups",
+        "example": {
+          "data": [
+            {
+              "directory_id": null,
+              "entity_type": "group",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "idp_id": null,
+              "inserted_at": "2024-01-15T10:30:00Z",
+              "last_synced_at": null,
+              "name": "Engineering",
+              "updated_at": "2024-01-15T10:30:00Z"
+            },
+            {
+              "directory_id": "6b4e3a2c-1234-5678-9abc-def012345678",
+              "entity_type": "group",
+              "id": "4ae929a7-1973-43f2-a1a8-9221b91a4c0e",
+              "idp_id": "google-workspace-group-123",
+              "inserted_at": "2024-01-10T08:15:00Z",
+              "last_synced_at": "2024-01-14T16:00:00Z",
+              "name": "Finance",
+              "updated_at": "2024-01-14T16:45:00Z"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Group details",
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "GroupListResponse",
+        "type": "object"
+      },
+      "Gateway": {
+        "description": "Gateway",
+        "example": {
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "ipv4": "100.64.0.1",
+          "ipv6": "fd00:2021:1111::1",
+          "name": "vpc-us-east",
+          "online": true
+        },
+        "properties": {
+          "id": {
+            "description": "Gateway ID",
+            "type": "string"
+          },
+          "ipv4": {
+            "description": "IPv4 Address of Gateway",
+            "type": "string"
+          },
+          "ipv6": {
+            "description": "IPv6 Address of Gateway",
+            "type": "string"
+          },
+          "name": {
+            "description": "Gateway Name",
+            "pattern": "[a-zA-Z][a-zA-Z0-9_]+",
+            "type": "string"
+          },
+          "online": {
+            "description": "Online status of Gateway",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "ipv4",
+          "ipv6",
+          "online"
+        ],
+        "title": "Gateway",
+        "type": "object"
+      },
+      "DeletedGatewayTokensResponse": {
+        "description": "Response schema for deleted Gateway Tokens",
+        "example": {
+          "data": {
+            "deleted_count": 5
+          }
+        },
+        "properties": {
+          "data": {
+            "properties": {
+              "deleted_count": {
+                "description": "Number of tokens that were deleted",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "deleted_count"
+            ],
+            "type": "object"
+          }
+        },
+        "title": "DeletedGatewayTokensResponse",
+        "type": "object"
+      },
+      "PolicyListResponse": {
+        "description": "Response schema for multiple Policies",
+        "example": {
+          "data": [
+            {
+              "description": "Policy to allow something",
+              "group_id": "88eae9ce-9179-48c6-8430-770e38dd4775",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "resource_id": "a9f60587-793c-46ae-8525-597f43ab2fb1"
+            },
+            {
+              "description": "Policy to allow something else",
+              "group_id": "343385a2-5437-4c66-8744-1332421ff736",
+              "id": "6301d7d2-4938-4123-87de-282c01cca656",
+              "resource_id": "9876bd25-0f6c-48fb-a9fd-196ba9be86e5"
+            }
+          ],
+          "metadata": {
+            "limit": 10,
+            "next_page": "98776234123",
+            "prev_page": "123123425",
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Policy details",
+            "items": {
+              "$ref": "#/components/schemas/Policy"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "PolicyListResponse",
+        "type": "object"
+      },
+      "GoogleAuthProviderResponse": {
+        "description": "Response schema for single Google Auth Provider",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Google"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GoogleAuthProvider"
+          }
+        },
+        "title": "GoogleAuthProviderResponse",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "authorization": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "title": "Firezone API",
+    "version": "1.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/userpass_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.UserpassAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserpassAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "Userpass Auth Provider Response"
+          }
+        },
+        "summary": "List Userpass Auth Providers",
+        "tags": [
+          "Userpass Auth Providers"
+        ]
+      }
+    },
+    "/okta_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OktaAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "Okta Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OktaAuthProviderResponse"
+                }
+              }
+            },
+            "description": "Okta Auth Provider Response"
+          }
+        },
+        "summary": "Show Okta Auth Provider",
+        "tags": [
+          "Okta Auth Providers"
+        ]
+      }
+    },
+    "/groups": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.index",
+        "parameters": [
+          {
+            "description": "Limit Groups returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupListResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "List Groups",
+        "tags": [
+          "Groups"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRequest"
+              }
+            }
+          },
+          "description": "Group Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "Create Group",
+        "tags": [
+          "Groups"
+        ]
+      }
+    },
+    "/email_otp_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EmailOTPAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailOTPAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "Email OTP Auth Provider Response"
+          }
+        },
+        "summary": "List Email OTP Auth Providers",
+        "tags": [
+          "Email OTP Auth Providers"
+        ]
+      }
+    },
+    "/oidc_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OIDCAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OIDCAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "OIDC Auth Provider Response"
+          }
+        },
+        "summary": "List OIDC Auth Providers",
+        "tags": [
+          "OIDC Auth Providers"
+        ]
+      }
+    },
+    "/sites/{site_id}/gateway_tokens": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayTokenController.delete_all",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedGatewayTokensResponse"
+                }
+              }
+            },
+            "description": "Deleted Tokens Response"
+          }
+        },
+        "summary": "Delete all Gateway Tokens for a Site",
+        "tags": [
+          "Gateway Tokens"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayTokenController.create",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayTokenResponse"
+                }
+              }
+            },
+            "description": "New Token Response"
+          }
+        },
+        "summary": "Create a Gateway Token",
+        "tags": [
+          "Gateway Tokens"
+        ]
+      }
+    },
+    "/account": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.AccountController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            },
+            "description": "AccountResponse"
+          }
+        },
+        "summary": "Show Account",
+        "tags": [
+          "Account"
+        ]
+      }
+    },
+    "/sites": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.index",
+        "parameters": [
+          {
+            "description": "Limit Sites returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteListResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "List Sites",
+        "tags": [
+          "Sites"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteRequest"
+              }
+            }
+          },
+          "description": "Site Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "Create Site",
+        "tags": [
+          "Sites"
+        ]
+      }
+    },
+    "/clients/{id}/verify": {
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.verify",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Verify Client",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/clients/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.delete",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Delete a Client",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.show",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Show Client",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.update (2)",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPutRequest"
+              }
+            }
+          },
+          "description": "Client Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Update Client",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.update",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPutRequest"
+              }
+            }
+          },
+          "description": "Client Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Update Client",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/groups/{group_id}/memberships": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.MembershipController.index",
+        "parameters": [
+          {
+            "description": "ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "group_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Limit Memberships returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipListResponse"
+                }
+              }
+            },
+            "description": "Membership Response"
+          }
+        },
+        "summary": "List Memberships",
+        "tags": [
+          "Memberships"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.MembershipController.update_patch",
+        "parameters": [
+          {
+            "description": "ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "group_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MembershipPatchRequest"
+              }
+            }
+          },
+          "description": "Membership Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipResponse"
+                }
+              }
+            },
+            "description": "Membership Response"
+          }
+        },
+        "summary": "Update an Membership",
+        "tags": [
+          "Memberships"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.MembershipController.update_put",
+        "parameters": [
+          {
+            "description": "ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "group_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MembershipPutRequest"
+              }
+            }
+          },
+          "description": "Membership Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipResponse"
+                }
+              }
+            },
+            "description": "Membership Response"
+          }
+        },
+        "summary": "Update Memberships",
+        "tags": [
+          "Memberships"
+        ]
+      }
+    },
+    "/sites/{site_id}/gateway_tokens/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayTokenController.delete",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Token ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedGatewayTokenResponse"
+                }
+              }
+            },
+            "description": "Deleted Token Response"
+          }
+        },
+        "summary": "Delete a Gateway Token",
+        "tags": [
+          "Gateway Tokens"
+        ]
+      }
+    },
+    "/actors/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.delete",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorResponse"
+                }
+              }
+            },
+            "description": "ActorResponse"
+          }
+        },
+        "summary": "Delete an Actor",
+        "tags": [
+          "Actors"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.show",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorResponse"
+                }
+              }
+            },
+            "description": "ActorResponse"
+          }
+        },
+        "summary": "Show Actor",
+        "tags": [
+          "Actors"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.update (2)",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActorRequest"
+              }
+            }
+          },
+          "description": "Actor attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorResponse"
+                }
+              }
+            },
+            "description": "ActorResponse"
+          }
+        },
+        "summary": "Update an Actor",
+        "tags": [
+          "Actors"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.update",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActorRequest"
+              }
+            }
+          },
+          "description": "Actor attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorResponse"
+                }
+              }
+            },
+            "description": "ActorResponse"
+          }
+        },
+        "summary": "Update an Actor",
+        "tags": [
+          "Actors"
+        ]
+      }
+    },
+    "/entra_directories/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EntraDirectoryController.show",
+        "parameters": [
+          {
+            "description": "Entra Directory ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntraDirectoryResponse"
+                }
+              }
+            },
+            "description": "Entra Directory Response"
+          }
+        },
+        "summary": "Show Entra Directory",
+        "tags": [
+          "Entra Directories"
+        ]
+      }
+    },
+    "/actors/{actor_id}/external_identities": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ExternalIdentityController.index",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Limit External Identities returned",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalIdentityListResponse"
+                }
+              }
+            },
+            "description": "ExternalIdentity List Response"
+          }
+        },
+        "summary": "List External Identities for an Actor",
+        "tags": [
+          "ExternalIdentities"
+        ]
+      }
+    },
+    "/okta_directories": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OktaDirectoryController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OktaDirectoryListResponse"
+                }
+              }
+            },
+            "description": "Okta Directory Response"
+          }
+        },
+        "summary": "List Okta Directories",
+        "tags": [
+          "Okta Directories"
+        ]
+      }
+    },
+    "/clients": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.index",
+        "parameters": [
+          {
+            "description": "Limit Clients returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientsResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "List Clients",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/google_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GoogleAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "Google Auth Provider Response"
+          }
+        },
+        "summary": "List Google Auth Providers",
+        "tags": [
+          "Google Auth Providers"
+        ]
+      }
+    },
+    "/entra_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EntraAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "Entra Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntraAuthProviderResponse"
+                }
+              }
+            },
+            "description": "Entra Auth Provider Response"
+          }
+        },
+        "summary": "Show Entra Auth Provider",
+        "tags": [
+          "Entra Auth Providers"
+        ]
+      }
+    },
+    "/policies/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.delete",
+        "parameters": [
+          {
+            "description": "Policy ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "Delete a Policy",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.show",
+        "parameters": [
+          {
+            "description": "Policy ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "Show Policy",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.update (2)",
+        "parameters": [
+          {
+            "description": "Policy ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyRequest"
+              }
+            }
+          },
+          "description": "Policy Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "Update a Policy",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.update",
+        "parameters": [
+          {
+            "description": "Policy ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyRequest"
+              }
+            }
+          },
+          "description": "Policy Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "Update a Policy",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/email_otp_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EmailOTPAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "Email OTP Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailOTPAuthProviderResponse"
+                }
+              }
+            },
+            "description": "Email OTP Auth Provider Response"
+          }
+        },
+        "summary": "Show Email OTP Auth Provider",
+        "tags": [
+          "Email OTP Auth Providers"
+        ]
+      }
+    },
+    "/okta_directories/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OktaDirectoryController.show",
+        "parameters": [
+          {
+            "description": "Okta Directory ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OktaDirectoryResponse"
+                }
+              }
+            },
+            "description": "Okta Directory Response"
+          }
+        },
+        "summary": "Show Okta Directory",
+        "tags": [
+          "Okta Directories"
+        ]
+      }
+    },
+    "/google_directories": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GoogleDirectoryController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleDirectoryListResponse"
+                }
+              }
+            },
+            "description": "Google Directory Response"
+          }
+        },
+        "summary": "List Google Directories",
+        "tags": [
+          "Google Directories"
+        ]
+      }
+    },
+    "/sites/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.delete",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "Delete a Site",
+        "tags": [
+          "Sites"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.show",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "Show Site",
+        "tags": [
+          "Sites"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.update (2)",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteRequest"
+              }
+            }
+          },
+          "description": "Site Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "Update a Site",
+        "tags": [
+          "Sites"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.SiteController.update",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteRequest"
+              }
+            }
+          },
+          "description": "Site Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteResponse"
+                }
+              }
+            },
+            "description": "Site Response"
+          }
+        },
+        "summary": "Update a Site",
+        "tags": [
+          "Sites"
+        ]
+      }
+    },
+    "/entra_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EntraAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntraAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "Entra Auth Provider Response"
+          }
+        },
+        "summary": "List Entra Auth Providers",
+        "tags": [
+          "Entra Auth Providers"
+        ]
+      }
+    },
+    "/userpass_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.UserpassAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "Userpass Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserpassAuthProviderResponse"
+                }
+              }
+            },
+            "description": "Userpass Auth Provider Response"
+          }
+        },
+        "summary": "Show Userpass Auth Provider",
+        "tags": [
+          "Userpass Auth Providers"
+        ]
+      }
+    },
+    "/entra_directories": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.EntraDirectoryController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntraDirectoryListResponse"
+                }
+              }
+            },
+            "description": "Entra Directory Response"
+          }
+        },
+        "summary": "List Entra Directories",
+        "tags": [
+          "Entra Directories"
+        ]
+      }
+    },
+    "/policies": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.index",
+        "parameters": [
+          {
+            "description": "Limit Policies returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyListResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "List Policies",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.PolicyController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyRequest"
+              }
+            }
+          },
+          "description": "Policy Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyResponse"
+                }
+              }
+            },
+            "description": "Policy Response"
+          }
+        },
+        "summary": "Create Policy",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/okta_auth_providers": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OktaAuthProviderController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OktaAuthProviderListResponse"
+                }
+              }
+            },
+            "description": "Okta Auth Provider Response"
+          }
+        },
+        "summary": "List Okta Auth Providers",
+        "tags": [
+          "Okta Auth Providers"
+        ]
+      }
+    },
+    "/clients/{id}/unverify": {
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ClientController.unverify",
+        "parameters": [
+          {
+            "description": "Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Client Response"
+          }
+        },
+        "summary": "Unverify Client",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/resources": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.index",
+        "parameters": [
+          {
+            "description": "Limit Resources returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceListResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "List Resources",
+        "tags": [
+          "Resources"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRequest"
+              }
+            }
+          },
+          "description": "Resource Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "Create Resource",
+        "tags": [
+          "Resources"
+        ]
+      }
+    },
+    "/actors/{actor_id}/external_identities/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ExternalIdentityController.delete",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "External Identity ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalIdentityResponse"
+                }
+              }
+            },
+            "description": "ExternalIdentity Response"
+          }
+        },
+        "summary": "Delete an External Identity",
+        "tags": [
+          "ExternalIdentities"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ExternalIdentityController.show",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "External Identity ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalIdentityResponse"
+                }
+              }
+            },
+            "description": "ExternalIdentity Response"
+          }
+        },
+        "summary": "Show External Identity",
+        "tags": [
+          "ExternalIdentities"
+        ]
+      }
+    },
+    "/groups/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.delete",
+        "parameters": [
+          {
+            "description": "Group ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "Delete a Group",
+        "tags": [
+          "Groups"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.show",
+        "parameters": [
+          {
+            "description": "Group ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "Show Group",
+        "tags": [
+          "Groups"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.update (2)",
+        "parameters": [
+          {
+            "description": "Group ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRequest"
+              }
+            }
+          },
+          "description": "Group Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "Update a Group",
+        "tags": [
+          "Groups"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GroupController.update",
+        "parameters": [
+          {
+            "description": "Group ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRequest"
+              }
+            }
+          },
+          "description": "Group Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description": "Group Response"
+          }
+        },
+        "summary": "Update a Group",
+        "tags": [
+          "Groups"
+        ]
+      }
+    },
+    "/google_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GoogleAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "Google Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAuthProviderResponse"
+                }
+              }
+            },
+            "description": "Google Auth Provider Response"
+          }
+        },
+        "summary": "Show Google Auth Provider",
+        "tags": [
+          "Google Auth Providers"
+        ]
+      }
+    },
+    "/sites/{site_id}/gateways": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayController.index",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Limit Gateways returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewaysResponse"
+                }
+              }
+            },
+            "description": "Gateway Response"
+          }
+        },
+        "summary": "List Gateways",
+        "tags": [
+          "Gateways"
+        ]
+      }
+    },
+    "/oidc_auth_providers/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.OIDCAuthProviderController.show",
+        "parameters": [
+          {
+            "description": "OIDC Auth Provider ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OIDCAuthProviderResponse"
+                }
+              }
+            },
+            "description": "OIDC Auth Provider Response"
+          }
+        },
+        "summary": "Show OIDC Auth Provider",
+        "tags": [
+          "OIDC Auth Providers"
+        ]
+      }
+    },
+    "/actors": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.index",
+        "parameters": [
+          {
+            "description": "Limit Users returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorsResponse"
+                }
+              }
+            },
+            "description": "ActorsResponse"
+          }
+        },
+        "summary": "List Actors",
+        "tags": [
+          "Actors"
+        ]
+      },
+      "post": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ActorController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActorRequest"
+              }
+            }
+          },
+          "description": "Actor attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActorResponse"
+                }
+              }
+            },
+            "description": "ActorResponse"
+          }
+        },
+        "summary": "Create an Actor",
+        "tags": [
+          "Actors"
+        ]
+      }
+    },
+    "/sites/{site_id}/gateways/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayController.delete",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Gateway ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayResponse"
+                }
+              }
+            },
+            "description": "Gateway Response"
+          }
+        },
+        "summary": "Delete a Gateway",
+        "tags": [
+          "Gateways"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GatewayController.show",
+        "parameters": [
+          {
+            "description": "Site ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "site_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Gateway ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayResponse"
+                }
+              }
+            },
+            "description": "Gateway Response"
+          }
+        },
+        "summary": "Show Gateway",
+        "tags": [
+          "Gateways"
+        ]
+      }
+    },
+    "/google_directories/{id}": {
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.GoogleDirectoryController.show",
+        "parameters": [
+          {
+            "description": "Google Directory ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleDirectoryResponse"
+                }
+              }
+            },
+            "description": "Google Directory Response"
+          }
+        },
+        "summary": "Show Google Directory",
+        "tags": [
+          "Google Directories"
+        ]
+      }
+    },
+    "/resources/{id}": {
+      "delete": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.delete",
+        "parameters": [
+          {
+            "description": "Resource ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "Delete Resource",
+        "tags": [
+          "Resources"
+        ]
+      },
+      "get": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.show",
+        "parameters": [
+          {
+            "description": "Resource ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "Show Resource",
+        "tags": [
+          "Resources"
+        ]
+      },
+      "patch": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.update (2)",
+        "parameters": [
+          {
+            "description": "Resource ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRequest"
+              }
+            }
+          },
+          "description": "Resource Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "Update Resource",
+        "tags": [
+          "Resources"
+        ]
+      },
+      "put": {
+        "callbacks": {
+
+        },
+        "operationId": "PortalAPI.ResourceController.update",
+        "parameters": [
+          {
+            "description": "Resource ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRequest"
+              }
+            }
+          },
+          "description": "Resource Attributes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            },
+            "description": "Resource Response"
+          }
+        },
+        "summary": "Update Resource",
+        "tags": [
+          "Resources"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "authorization": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://firezone-api.us-services.cardoaiapps.com",
+      "variables": {
+
+      }
+    }
+  ],
+  "tags": []
+}

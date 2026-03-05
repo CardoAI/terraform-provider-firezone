@@ -45,4 +45,3 @@ sites.auto.tfvars
 # Test scripts output
 test_*.sh
 debug_*.sh
-install.sh

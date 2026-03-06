@@ -1,21 +1,43 @@
 #!/bin/bash
 set -e
 
+# AWS Configuration
 export AWS_PROFILE="cardoai-us-infra-mgmt"
-# if ! aws sts get-caller-identity --profile ${AWS_PROFILE} > /dev/null] >&1; then
+# if ! aws sts get-caller-identity --profile ${AWS_PROFILE} > /dev/null 2>&1; then
 #   aws sso login --sso-session cardoai
 # fi
-export AWS_ROLE_ARN="arn:aws:iam::221082183447:role/cardoai-us-im-iam-role-terraform-admin"
-export AWS_ROLE_SESSION_NAME="terraform"
-AWS_CREDENTIALS=$(aws sts assume-role --role-arn ${AWS_ROLE_ARN} --role-session-name ${AWS_ROLE_SESSION_NAME} --profile ${AWS_PROFILE})
-export AWS_ACCESS_KEY_ID=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.AccessKeyId)
-export AWS_SECRET_ACCESS_KEY=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.SecretAccessKey)
-export AWS_SESSION_TOKEN=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.SessionToken)
+
+# First assume the intermediate role in infra-mgmt account
+INTERMEDIATE_ROLE_ARN="arn:aws:iam::221082183447:role/cardoai-us-im-iam-role-terraform-admin"
+echo "Assuming intermediate role: ${INTERMEDIATE_ROLE_ARN}"
+
+INTERMEDIATE_CREDENTIALS=$(aws sts assume-role \
+    --role-arn "${INTERMEDIATE_ROLE_ARN}" \
+    --role-session-name "terraform-intermediate" \
+    --profile "${AWS_PROFILE}")
+
+export AWS_ACCESS_KEY_ID=$(echo ${INTERMEDIATE_CREDENTIALS} | jq -r .Credentials.AccessKeyId)
+export AWS_SECRET_ACCESS_KEY=$(echo ${INTERMEDIATE_CREDENTIALS} | jq -r .Credentials.SecretAccessKey)
+export AWS_SESSION_TOKEN=$(echo ${INTERMEDIATE_CREDENTIALS} | jq -r .Credentials.SessionToken)
+
+# Now assume the target role in common-wl account (412381766327)
+TARGET_ROLE_ARN="arn:aws:iam::412381766327:role/cardoai-us-cw-iam-role-terraform-admin"
+echo "Assuming target role: ${TARGET_ROLE_ARN}"
+
+TARGET_CREDENTIALS=$(aws sts assume-role \
+    --role-arn "${TARGET_ROLE_ARN}" \
+    --role-session-name "terraform-provider-upload")
+
+export AWS_ACCESS_KEY_ID=$(echo ${TARGET_CREDENTIALS} | jq -r .Credentials.AccessKeyId)
+export AWS_SECRET_ACCESS_KEY=$(echo ${TARGET_CREDENTIALS} | jq -r .Credentials.SecretAccessKey)
+export AWS_SESSION_TOKEN=$(echo ${TARGET_CREDENTIALS} | jq -r .Credentials.SessionToken)
+
+echo "✅ Successfully assumed role in account 412381766327"
 
 # Configuration
 PROVIDER_NAME="firezone"
 NAMESPACE="cardoai"
-S3_BUCKET="${NAMESPACE}-us-cw-fireone-provider-bucket"
+S3_BUCKET="${NAMESPACE}-us-cw-firezone-provider-bucket"
 AWS_REGION="${AWS_REGION:-us-east-2}"
 
 # Get version from git tag (latest tag)

@@ -1,32 +1,22 @@
 #!/bin/bash
 set -e
 
-# Detect OS and architecture
-OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-ARCH=$(uname -m)
+export AWS_PROFILE="cardoai-us-infra-mgmt"
+# if ! aws sts get-caller-identity --profile ${AWS_PROFILE} > /dev/null] >&1; then
+#   aws sso login --sso-session cardoai
+# fi
+export AWS_ROLE_ARN="arn:aws:iam::221082183447:role/cardoai-us-im-iam-role-terraform-admin"
+export AWS_ROLE_SESSION_NAME="terraform"
+AWS_CREDENTIALS=$(aws sts assume-role --role-arn ${AWS_ROLE_ARN} --role-session-name ${AWS_ROLE_SESSION_NAME} --profile ${AWS_PROFILE})
+export AWS_ACCESS_KEY_ID=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.AccessKeyId)
+export AWS_SECRET_ACCESS_KEY=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.SecretAccessKey)
+export AWS_SESSION_TOKEN=$(echo ${AWS_CREDENTIALS} | jq -r .Credentials.SessionToken)
 
-# Map architecture names
-case $ARCH in
-    x86_64)
-        ARCH="amd64"
-        ;;
-    aarch64|arm64)
-        ARCH="arm64"
-        ;;
-esac
-
-# Map OS names
-case $OS in
-    darwin)
-        OS="darwin"
-        ;;
-    linux)
-        OS="linux"
-        ;;
-    mingw*|msys*|cygwin*)
-        OS="windows"
-        ;;
-esac
+# Configuration
+PROVIDER_NAME="firezone"
+NAMESPACE="cardoai"
+S3_BUCKET="${NAMESPACE}-us-cw-fireone-provider-bucket"
+AWS_REGION="${AWS_REGION:-us-east-2}"
 
 # Get version from git tag (latest tag)
 VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
@@ -35,38 +25,55 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-PROVIDER_NAME="firezone"
-NAMESPACE="cardoai"
-GITHUB_REPO="cardoai/firezone-terraform-provider"
+echo "Building version: ${VERSION}"
 
-# Create plugin directory
-PLUGIN_DIR="${HOME}/.terraform.d/plugins/registry.terraform.io/${NAMESPACE}/${PROVIDER_NAME}/${VERSION}/${OS}_${ARCH}"
-echo "Installing to ${PLUGIN_DIR}..."
-mkdir -p "${PLUGIN_DIR}"
+# Create build directory
+BUILD_DIR="./dist"
+mkdir -p "${BUILD_DIR}"
 
-# Download from GitHub releases
-DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/releases/download/v${VERSION}/firezone-terraform-provider_${VERSION}_${OS}_${ARCH}.zip"
-echo "Downloading from ${DOWNLOAD_URL}..."
+# Architectures and OS to build for
+PLATFORMS=(
+    "linux/amd64"
+    "linux/arm64"
+    "darwin/amd64"
+    "darwin/arm64"
+)
 
-curl -L -o /tmp/provider.zip "${DOWNLOAD_URL}"
+# Build for each platform
+for PLATFORM in "${PLATFORMS[@]}"; do
+    OS="${PLATFORM%/*}"
+    ARCH="${PLATFORM#*/}"
+    
+    echo "Building for ${OS}/${ARCH}..."
+    
+    OUTPUT_NAME="terraform-provider-${PROVIDER_NAME}_v${VERSION}"
+    GOOS="${OS}" GOARCH="${ARCH}" go build -o "${BUILD_DIR}/${OUTPUT_NAME}_${OS}_${ARCH}" .
+    
+    echo "✅ Built ${OUTPUT_NAME}_${OS}_${ARCH}"
+done
 
-# Extract binary
-unzip -o /tmp/provider.zip -d /tmp/provider_extract
-cp /tmp/provider_extract/firezone-terraform-provider_v${VERSION}* "${PLUGIN_DIR}/terraform-provider-${PROVIDER_NAME}"
-chmod +x "${PLUGIN_DIR}/terraform-provider-${PROVIDER_NAME}"
+# Upload to S3
+echo "Uploading to S3 bucket: ${S3_BUCKET}"
 
-# Cleanup
-rm -rf /tmp/provider.zip /tmp/provider_extract
+for PLATFORM in "${PLATFORMS[@]}"; do
+    OS="${PLATFORM%/*}"
+    ARCH="${PLATFORM#*/}"
+    OUTPUT_NAME="terraform-provider-${PROVIDER_NAME}_v${VERSION}_${OS}_${ARCH}"
+    # Terraform filesystem mirror expects: registry.terraform.io/namespace/provider/version/os_arch/
+    S3_PATH="s3://${S3_BUCKET}/registry.terraform.io/${NAMESPACE}/${PROVIDER_NAME}/${VERSION}/${OS}_${ARCH}/terraform-provider-${PROVIDER_NAME}_v${VERSION}"
+    
+    aws s3 cp "${BUILD_DIR}/${OUTPUT_NAME}" "${S3_PATH}" --region "${AWS_REGION}"
+    echo "✅ Uploaded to ${S3_PATH}"
+done
 
-echo "✅ Provider installed successfully!"
 echo ""
-echo "Use in your Terraform configuration:"
+echo "✅ All builds completed and uploaded successfully!"
 echo ""
-echo "terraform {"
-echo "  required_providers {"
-echo "    ${PROVIDER_NAME} = {"
-echo "      source  = \"registry.terraform.io/${NAMESPACE}/${PROVIDER_NAME}\""
-echo "      version = \"${VERSION}\""
-echo "    }"
+echo "Configure Terraform CLI to use the mirror:"
+echo ""
+echo "provider_installation {"
+echo "  filesystem_mirror {"
+echo "    path    = \"s3://${S3_BUCKET}\""
+echo "    include = [\"registry.terraform.io/${NAMESPACE}/${PROVIDER_NAME}\"]"
 echo "  }"
 echo "}"

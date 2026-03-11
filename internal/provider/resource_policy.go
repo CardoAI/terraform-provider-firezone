@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -12,6 +13,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+// Helper function to check if a string contains a substring
+func contains(s, substr string) bool {
+	return strings.Contains(s, substr)
+}
 
 var _ resource.Resource = &PolicyResource{}
 var _ resource.ResourceWithImportState = &PolicyResource{}
@@ -128,6 +134,12 @@ func (r *PolicyResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	body, err := r.client.doRequest("GET", "/policies/"+data.ID.ValueString(), nil)
 	if err != nil {
+		// Check if it's a 404 error (resource deleted outside Terraform)
+		if contains(err.Error(), "404") || contains(err.Error(), "Not Found") {
+			// Resource no longer exists, remove from state
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read policy: %s", err))
 		return
 	}

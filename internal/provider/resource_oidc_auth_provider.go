@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -74,10 +73,8 @@ func (r *OIDCAuthProviderResource) Schema(ctx context.Context, req resource.Sche
 				Required:            true,
 			},
 			"scope": schema.StringAttribute{
-				MarkdownDescription: "OAuth2 scope (default: openid email profile)",
+				MarkdownDescription: "OAuth2 scope (optional, e.g., 'openid email profile')",
 				Optional:            true,
-				Computed:            true,
-				Default:             stringdefault.StaticString("openid email profile"),
 			},
 			"context": schema.StringAttribute{
 				MarkdownDescription: "Where the provider can be used: clients_and_portal, clients_only, portal_only",
@@ -98,16 +95,12 @@ func (r *OIDCAuthProviderResource) Schema(ctx context.Context, req resource.Sche
 				Default:             booldefault.StaticBool(false),
 			},
 			"client_session_lifetime_secs": schema.Int64Attribute{
-				MarkdownDescription: "Client session lifetime in seconds",
+				MarkdownDescription: "Client session lifetime in seconds (optional)",
 				Optional:            true,
-				Computed:            true,
-				Default:             int64default.StaticInt64(86400),
 			},
 			"portal_session_lifetime_secs": schema.Int64Attribute{
-				MarkdownDescription: "Portal session lifetime in seconds",
+				MarkdownDescription: "Portal session lifetime in seconds (optional)",
 				Optional:            true,
-				Computed:            true,
-				Default:             int64default.StaticInt64(3600),
 			},
 		},
 	}
@@ -128,65 +121,13 @@ func (r *OIDCAuthProviderResource) Configure(ctx context.Context, req resource.C
 }
 
 func (r *OIDCAuthProviderResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data OIDCAuthProviderResourceModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	reqBody := map[string]interface{}{
-		"provider": map[string]interface{}{
-			"name":                          data.Name.ValueString(),
-			"client_id":                     data.ClientID.ValueString(),
-			"client_secret":                 data.ClientSecret.ValueString(),
-			"discovery_document_uri":        data.DiscoveryDocumentURI.ValueString(),
-			"scope":                         data.Scope.ValueString(),
-			"context":                       data.Context.ValueString(),
-			"is_default":                    data.IsDefault.ValueBool(),
-			"is_disabled":                   data.IsDisabled.ValueBool(),
-			"client_session_lifetime_secs":  data.ClientSessionLifetimeSecs.ValueInt64(),
-			"portal_session_lifetime_secs":  data.PortalSessionLifetimeSecs.ValueInt64(),
-		},
-	}
-
-	body, err := r.client.doRequest("POST", "/oidc_auth_providers", reqBody)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create OIDC auth provider: %s", err))
-		return
-	}
-
-	var result struct {
-		Data struct {
-			ID                        string `json:"id"`
-			Name                      string `json:"name"`
-			ClientID                  string `json:"client_id"`
-			DiscoveryDocumentURI      string `json:"discovery_document_uri"`
-			Scope                     string `json:"scope"`
-			Context                   string `json:"context"`
-			IsDefault                 bool   `json:"is_default"`
-			IsDisabled                bool   `json:"is_disabled"`
-			ClientSessionLifetimeSecs int64  `json:"client_session_lifetime_secs"`
-			PortalSessionLifetimeSecs int64  `json:"portal_session_lifetime_secs"`
-		} `json:"data"`
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		resp.Diagnostics.AddError("Parse Error", fmt.Sprintf("Unable to parse response: %s", err))
-		return
-	}
-
-	data.ID = types.StringValue(result.Data.ID)
-	data.Name = types.StringValue(result.Data.Name)
-	data.ClientID = types.StringValue(result.Data.ClientID)
-	data.DiscoveryDocumentURI = types.StringValue(result.Data.DiscoveryDocumentURI)
-	data.Scope = types.StringValue(result.Data.Scope)
-	data.Context = types.StringValue(result.Data.Context)
-	data.IsDefault = types.BoolValue(result.Data.IsDefault)
-	data.IsDisabled = types.BoolValue(result.Data.IsDisabled)
-	data.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
-	data.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.AddError(
+		"OIDC Provider Creation Not Supported",
+		"Firezone does not support creating OIDC authentication providers via API. "+
+			"Please create the OIDC provider manually in the Firezone admin portal, then import it into Terraform using:\n\n"+
+			"  terraform import firezone_oidc_auth_provider.<name> <provider_id>\n\n"+
+			"You can find the provider ID in the Firezone UI or by listing providers via the API.",
+	)
 }
 
 func (r *OIDCAuthProviderResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -204,16 +145,16 @@ func (r *OIDCAuthProviderResource) Read(ctx context.Context, req resource.ReadRe
 
 	var result struct {
 		Data struct {
-			ID                        string `json:"id"`
-			Name                      string `json:"name"`
-			ClientID                  string `json:"client_id"`
-			DiscoveryDocumentURI      string `json:"discovery_document_uri"`
-			Scope                     string `json:"scope"`
-			Context                   string `json:"context"`
-			IsDefault                 bool   `json:"is_default"`
-			IsDisabled                bool   `json:"is_disabled"`
-			ClientSessionLifetimeSecs int64  `json:"client_session_lifetime_secs"`
-			PortalSessionLifetimeSecs int64  `json:"portal_session_lifetime_secs"`
+			ID                        string  `json:"id"`
+			Name                      string  `json:"name"`
+			ClientID                  string  `json:"client_id"`
+			DiscoveryDocumentURI      string  `json:"discovery_document_uri"`
+			Scope                     *string `json:"scope"`
+			Context                   string  `json:"context"`
+			IsDefault                 bool    `json:"is_default"`
+			IsDisabled                bool    `json:"is_disabled"`
+			ClientSessionLifetimeSecs *int64  `json:"client_session_lifetime_secs"`
+			PortalSessionLifetimeSecs *int64  `json:"portal_session_lifetime_secs"`
 		} `json:"data"`
 	}
 
@@ -225,12 +166,24 @@ func (r *OIDCAuthProviderResource) Read(ctx context.Context, req resource.ReadRe
 	data.Name = types.StringValue(result.Data.Name)
 	data.ClientID = types.StringValue(result.Data.ClientID)
 	data.DiscoveryDocumentURI = types.StringValue(result.Data.DiscoveryDocumentURI)
-	data.Scope = types.StringValue(result.Data.Scope)
+	if result.Data.Scope != nil && *result.Data.Scope != "" {
+		data.Scope = types.StringValue(*result.Data.Scope)
+	} else {
+		data.Scope = types.StringNull()
+	}
 	data.Context = types.StringValue(result.Data.Context)
 	data.IsDefault = types.BoolValue(result.Data.IsDefault)
 	data.IsDisabled = types.BoolValue(result.Data.IsDisabled)
-	data.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
-	data.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
+	if result.Data.ClientSessionLifetimeSecs != nil {
+		data.ClientSessionLifetimeSecs = types.Int64Value(*result.Data.ClientSessionLifetimeSecs)
+	} else {
+		data.ClientSessionLifetimeSecs = types.Int64Null()
+	}
+	if result.Data.PortalSessionLifetimeSecs != nil {
+		data.PortalSessionLifetimeSecs = types.Int64Value(*result.Data.PortalSessionLifetimeSecs)
+	} else {
+		data.PortalSessionLifetimeSecs = types.Int64Null()
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -244,17 +197,26 @@ func (r *OIDCAuthProviderResource) Update(ctx context.Context, req resource.Upda
 
 	reqBody := map[string]interface{}{
 		"provider": map[string]interface{}{
-			"name":                          data.Name.ValueString(),
-			"client_id":                     data.ClientID.ValueString(),
-			"client_secret":                 data.ClientSecret.ValueString(),
-			"discovery_document_uri":        data.DiscoveryDocumentURI.ValueString(),
-			"scope":                         data.Scope.ValueString(),
-			"context":                       data.Context.ValueString(),
-			"is_default":                    data.IsDefault.ValueBool(),
-			"is_disabled":                   data.IsDisabled.ValueBool(),
-			"client_session_lifetime_secs":  data.ClientSessionLifetimeSecs.ValueInt64(),
-			"portal_session_lifetime_secs":  data.PortalSessionLifetimeSecs.ValueInt64(),
+			"name":                   data.Name.ValueString(),
+			"client_id":              data.ClientID.ValueString(),
+			"client_secret":          data.ClientSecret.ValueString(),
+			"discovery_document_uri": data.DiscoveryDocumentURI.ValueString(),
+			"context":                data.Context.ValueString(),
+			"is_default":             data.IsDefault.ValueBool(),
+			"is_disabled":            data.IsDisabled.ValueBool(),
 		},
+	}
+
+	// Only include optional fields if they are explicitly set
+	provider := reqBody["provider"].(map[string]interface{})
+	if !data.Scope.IsNull() && !data.Scope.IsUnknown() {
+		provider["scope"] = data.Scope.ValueString()
+	}
+	if !data.ClientSessionLifetimeSecs.IsNull() && !data.ClientSessionLifetimeSecs.IsUnknown() {
+		provider["client_session_lifetime_secs"] = data.ClientSessionLifetimeSecs.ValueInt64()
+	}
+	if !data.PortalSessionLifetimeSecs.IsNull() && !data.PortalSessionLifetimeSecs.IsUnknown() {
+		provider["portal_session_lifetime_secs"] = data.PortalSessionLifetimeSecs.ValueInt64()
 	}
 
 	body, err := r.client.doRequest("PUT", "/oidc_auth_providers/"+data.ID.ValueString(), reqBody)

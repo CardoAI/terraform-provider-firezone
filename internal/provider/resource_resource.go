@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"strings"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -169,6 +170,12 @@ func (r *ResourceResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 	body, err := r.client.doRequest("GET", "/resources/"+data.ID.ValueString(), nil)
 	if err != nil {
+		// Check if it's a 404 error (resource deleted outside Terraform)
+		if strings.Contains(err.Error(), "404") || strings.Contains(err.Error(), "Not Found") {
+			// Resource no longer exists, remove from state
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read resource: %s", err))
 		return
 	}

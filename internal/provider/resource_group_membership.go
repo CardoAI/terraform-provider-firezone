@@ -116,32 +116,53 @@ func (r *GroupMembershipResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	body, err := r.client.doRequest("GET", "/groups/"+data.GroupID.ValueString()+"/memberships", nil)
-	if err != nil {
-		// Check if it's a 404 error (resource deleted outside Terraform)
-		if strings.Contains(err.Error(), "404") || strings.Contains(err.Error(), "Not Found") {
-			// Resource no longer exists, remove from state
-			resp.State.RemoveResource(ctx)
+	// Fetch all pages of memberships
+	var allMembers []struct {
+		ID string `json:"id"`
+	}
+	pageCursor := ""
+
+	for {
+		path := "/groups/" + data.GroupID.ValueString() + "/memberships?limit=100"
+		if pageCursor != "" {
+			path += "&page_cursor=" + pageCursor
+		}
+
+		body, err := r.client.doRequest("GET", path, nil)
+		if err != nil {
+			if strings.Contains(err.Error(), "404") || strings.Contains(err.Error(), "Not Found") {
+				resp.State.RemoveResource(ctx)
+				return
+			}
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read group memberships: %s", err))
 			return
 		}
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read group memberships: %s", err))
-		return
-	}
 
-	var result struct {
-		Data []struct {
-			ID string `json:"id"`
-		} `json:"data"`
-	}
+		var result struct {
+			Data []struct {
+				ID string `json:"id"`
+			} `json:"data"`
+			Metadata struct {
+				NextPage string `json:"next_page"`
+			} `json:"metadata"`
+		}
 
-	if err := json.Unmarshal(body, &result); err != nil {
-		resp.Diagnostics.AddError("Parse Error", fmt.Sprintf("Unable to parse response: %s", err))
-		return
+		if err := json.Unmarshal(body, &result); err != nil {
+			resp.Diagnostics.AddError("Parse Error", fmt.Sprintf("Unable to parse response: %s", err))
+			return
+		}
+
+		allMembers = append(allMembers, result.Data...)
+
+		if result.Metadata.NextPage == "" {
+			break
+		}
+		pageCursor = result.Metadata.NextPage
 	}
 
 	// Convert to types.Set
-	actorIDs := make([]attr.Value, len(result.Data))
-	for i, member := range result.Data {
+	actorIDs := make([]attr.Value, len(allMembers))
+	for i, member := range allMembers {
 		actorIDs[i] = types.StringValue(member.ID)
 	}
 

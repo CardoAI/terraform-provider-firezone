@@ -18,6 +18,7 @@ A Terraform provider for managing Firezone VPN resources including actors, group
 - [Examples](#examples)
 - [Importing Existing Resources](#importing-existing-resources)
 - [Troubleshooting](#troubleshooting)
+- [Scripts](#scripts)
 - [Development](#development)
 
 ## Quick Start
@@ -728,6 +729,53 @@ curl -s -w "\nHTTP Status: %{http_code}\n" \
   -H "Authorization: Bearer $FIREZONE_API_KEY" \
   "$FIREZONE_API_URL/actors" | head -c 200
 ```
+
+## Scripts
+
+Both scripts live in [scripts/](scripts/) and require AWS SSO access via `cardoai-us-infra-mgmt` profile. Run them from the repo root.
+
+### scripts/install.sh
+
+Builds Go binaries for all platforms and uploads them to the private S3 mirror.
+
+**Prerequisites:** `aws`, `jq`, `go` >= 1.21, a git tag (version is derived from `git describe --tags`).
+
+```bash
+# Tag first, then run
+git tag v0.2.0
+bash scripts/install.sh
+```
+
+What it does:
+1. Assumes IAM role chain → lands in account `412381766327`
+2. Builds `terraform-provider-firezone_v<VERSION>` for `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64` into `dist/`
+3. Uploads each binary to `s3://cardoai-us-cw-firezone-provider-bucket/registry.terraform.io/cardoai/firezone/<version>/<os>_<arch>/`
+
+### scripts/setup-terraform-mirror.sh
+
+Downloads the provider binary for the current platform from S3 and configures a workspace-local `.terraformrc` so `terraform init` picks it up without hitting the public registry.
+
+**Prerequisites:** `aws`, `jq`. Target Terraform workspace directory must already exist.
+
+```bash
+bash scripts/setup-terraform-mirror.sh
+```
+
+What it does:
+1. Assumes the same IAM role chain
+2. Detects current OS/arch
+3. Syncs the matching binary from S3 into `<target-dir>/.terraform/plugins/`
+4. Writes `<target-dir>/.terraformrc` pointing at the local mirror
+
+After running, activate the config before `terraform init`:
+
+```bash
+cd cardoai-us/cardoai-us-infra/cardoai-us-common-wl-412381766327/firezone
+export TF_CLI_CONFIG_FILE=$(pwd)/.terraformrc
+terraform init
+```
+
+> **Note:** Add `.terraform/` and `.terraformrc` to `.gitignore` in the target workspace.
 
 ## Development
 

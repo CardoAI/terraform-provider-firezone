@@ -1,13 +1,12 @@
 {
   "components": {
-    "responses": {
-
-    },
+    "responses": {},
     "schemas": {
       "ClientPutRequest": {
         "description": "PUT body for updating a Client",
         "example": {
           "client": {
+            "hostname": "johns-macbook.example.com",
             "name": "John's Macbook Air"
           }
         },
@@ -40,17 +39,97 @@
         "title": "PolicyResponse",
         "type": "object"
       },
+      "GatewaySession": {
+        "description": "Gateway Session",
+        "example": {
+          "created_at": "2025-01-01T00:00:00Z",
+          "gateway_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "gateway_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+          "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "last_seen_at": "2025-01-01T00:00:00Z",
+          "last_seen_remote_ip": "1.2.3.4",
+          "last_seen_remote_ip_location_city": "San Francisco",
+          "last_seen_remote_ip_location_lat": 37.7749,
+          "last_seen_remote_ip_location_lon": -122.4194,
+          "last_seen_remote_ip_location_region": "California",
+          "last_seen_user_agent": "Linux/6.1.0 connlib/1.4.5 (x86_64)",
+          "last_seen_version": "1.4.5"
+        },
+        "properties": {
+          "created_at": {
+            "description": "Session creation timestamp",
+            "type": "string"
+          },
+          "gateway_id": {
+            "description": "Gateway ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "gateway_token_id": {
+            "description": "Gateway Token ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "description": "Gateway Session ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "description": "Timestamp of the session",
+            "type": "string"
+          },
+          "last_seen_remote_ip": {
+            "description": "Remote IP at time of session",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_city": {
+            "description": "Remote IP location city",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_lat": {
+            "description": "Remote IP location latitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_lon": {
+            "description": "Remote IP location longitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_region": {
+            "description": "Remote IP location region",
+            "type": "string"
+          },
+          "last_seen_user_agent": {
+            "description": "User agent at time of session",
+            "type": "string"
+          },
+          "last_seen_version": {
+            "description": "Gateway version at time of session",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "gateway_id",
+          "gateway_token_id",
+          "last_seen_at",
+          "created_at"
+        ],
+        "title": "GatewaySession",
+        "type": "object"
+      },
       "GroupResponse": {
         "description": "Response schema for single Group",
         "example": {
           "data": {
             "directory_id": null,
+            "email": null,
             "entity_type": "group",
             "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
             "idp_id": null,
             "inserted_at": "2024-01-15T10:30:00Z",
-            "last_synced_at": null,
             "name": "Engineering",
+            "synced_at": null,
             "updated_at": "2024-01-15T10:30:00Z"
           }
         },
@@ -84,6 +163,7 @@
           },
           "created_by_directory_id": {
             "description": "Directory ID that created this actor",
+            "format": "uuid",
             "nullable": true,
             "type": "string"
           },
@@ -99,6 +179,7 @@
           },
           "id": {
             "description": "Actor ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
@@ -177,6 +258,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_id": {
@@ -198,11 +280,12 @@
           },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_default": {
@@ -231,7 +314,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -253,26 +336,57 @@
         "properties": {
           "description": {
             "description": "Policy Description",
+            "nullable": true,
             "type": "string"
           },
           "group_id": {
             "description": "Group ID",
+            "format": "uuid",
+            "nullable": true,
             "type": "string"
           },
           "id": {
             "description": "Policy ID",
+            "format": "uuid",
             "type": "string"
           },
           "resource_id": {
             "description": "Resource ID",
+            "format": "uuid",
             "type": "string"
           }
         },
         "required": [
-          "name",
-          "type"
+          "id",
+          "group_id",
+          "resource_id",
+          "description"
         ],
         "title": "Policy",
+        "type": "object"
+      },
+      "DeletedClientTokensResponse": {
+        "description": "Response schema for deleted Client Tokens",
+        "example": {
+          "data": {
+            "deleted_count": 3
+          }
+        },
+        "properties": {
+          "data": {
+            "properties": {
+              "deleted_count": {
+                "description": "Number of tokens that were deleted",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "deleted_count"
+            ],
+            "type": "object"
+          }
+        },
+        "title": "DeletedClientTokensResponse",
         "type": "object"
       },
       "GatewaysResponse": {
@@ -336,6 +450,7 @@
                 "description": "Array of Actor IDs",
                 "items": {
                   "description": "Actor ID",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "type": "array"
@@ -344,6 +459,7 @@
                 "description": "Array of Actor IDs",
                 "items": {
                   "description": "Actor ID",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "type": "array"
@@ -418,9 +534,9 @@
               "idp_id": "2551705710219359",
               "inserted_at": "2025-01-15T12:34:56.789Z",
               "issuer": "https://accounts.google.com",
-              "last_synced_at": "2025-01-15T12:34:56.789Z",
               "name": "John Doe",
-              "picture": "https://example.com/avatar1.jpg"
+              "picture": "https://example.com/avatar1.jpg",
+              "synced_at": "2025-01-15T12:34:56.789Z"
             },
             {
               "account_id": "5e6f7d8c-9b0a-1c2d-3e4f-5a6b7c8d9e0f",
@@ -432,9 +548,9 @@
               "idp_id": "2638957392736483",
               "inserted_at": "2025-01-15T11:22:33.456Z",
               "issuer": "https://company.okta.com",
-              "last_synced_at": "2025-01-15T11:22:33.456Z",
               "name": "Jane Smith",
-              "picture": "https://example.com/avatar2.jpg"
+              "picture": "https://example.com/avatar2.jpg",
+              "synced_at": "2025-01-15T11:22:33.456Z"
             }
           ],
           "metadata": {
@@ -491,6 +607,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_session_lifetime_secs": {
@@ -508,11 +625,12 @@
           },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_disabled": {
@@ -533,7 +651,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -566,6 +684,26 @@
           }
         },
         "title": "ActorResponse",
+        "type": "object"
+      },
+      "ClientTokenCreateResponse": {
+        "description": "Response schema for a new Client Token",
+        "example": {
+          "data": {
+            "actor_id": "43a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "expires_at": "2025-01-15T12:34:56.789Z",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "inserted_at": "2025-01-15T12:34:56.789Z",
+            "token": "secret-token-here",
+            "updated_at": "2025-01-15T12:34:56.789Z"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ClientTokenResponse"
+          }
+        },
+        "title": "ClientTokenCreateResponse",
         "type": "object"
       },
       "ResourceListResponse": {
@@ -610,6 +748,118 @@
         "title": "ResourceListResponse",
         "type": "object"
       },
+      "ClientSessionsResponse": {
+        "description": "Response schema for multiple Client Sessions",
+        "example": {
+          "data": [
+            {
+              "client_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "client_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+              "created_at": "2025-01-01T00:00:00Z",
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "last_seen_at": "2025-01-01T00:00:00Z",
+              "last_seen_remote_ip": "1.2.3.4",
+              "last_seen_remote_ip_location_city": "San Francisco",
+              "last_seen_remote_ip_location_lat": 37.7749,
+              "last_seen_remote_ip_location_lon": -122.4194,
+              "last_seen_remote_ip_location_region": "California",
+              "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+              "last_seen_version": "1.4.5",
+              "updated_at": "2025-01-01T00:00:00Z"
+            }
+          ],
+          "metadata": {
+            "limit": 50,
+            "next_page": "abc123",
+            "prev_page": null,
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Client Sessions details",
+            "items": {
+              "$ref": "#/components/schemas/ClientSession"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ClientSessionsResponse",
+        "type": "object"
+      },
+      "GatewaySessionsResponse": {
+        "description": "Response schema for multiple Gateway Sessions",
+        "example": {
+          "data": [
+            {
+              "created_at": "2025-01-01T00:00:00Z",
+              "gateway_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "gateway_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "last_seen_at": "2025-01-01T00:00:00Z",
+              "last_seen_remote_ip": "1.2.3.4",
+              "last_seen_remote_ip_location_city": "San Francisco",
+              "last_seen_remote_ip_location_lat": 37.7749,
+              "last_seen_remote_ip_location_lon": -122.4194,
+              "last_seen_remote_ip_location_region": "California",
+              "last_seen_user_agent": "Linux/6.1.0 connlib/1.4.5 (x86_64)",
+              "last_seen_version": "1.4.5"
+            }
+          ],
+          "metadata": {
+            "limit": 50,
+            "next_page": "abc123",
+            "prev_page": null,
+            "total": 100
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Gateway Sessions details",
+            "items": {
+              "$ref": "#/components/schemas/GatewaySession"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "GatewaySessionsResponse",
+        "type": "object"
+      },
+      "ClientSessionResponse": {
+        "description": "Response schema for single Client Session",
+        "example": {
+          "data": {
+            "client_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "client_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+            "created_at": "2025-01-01T00:00:00Z",
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "last_seen_at": "2025-01-01T00:00:00Z",
+            "last_seen_remote_ip": "1.2.3.4",
+            "last_seen_remote_ip_location_city": "San Francisco",
+            "last_seen_remote_ip_location_lat": 37.7749,
+            "last_seen_remote_ip_location_lon": -122.4194,
+            "last_seen_remote_ip_location_region": "California",
+            "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+            "last_seen_version": "1.4.5",
+            "updated_at": "2025-01-01T00:00:00Z"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ClientSession"
+          }
+        },
+        "title": "ClientSessionResponse",
+        "type": "object"
+      },
       "GatewayToken": {
         "description": "Gateway Token",
         "example": {
@@ -619,6 +869,7 @@
         "properties": {
           "id": {
             "description": "Gateway Token ID",
+            "format": "uuid",
             "type": "string"
           },
           "token": {
@@ -643,6 +894,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_session_lifetime_secs": {
@@ -660,11 +912,12 @@
           },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_disabled": {
@@ -685,7 +938,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -838,6 +1091,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "disabled_reason": {
@@ -858,11 +1112,21 @@
           },
           "error_emailed_at": {
             "description": "Error email timestamp",
-            "format": "datetime",
+            "format": "date-time",
+            "type": "string"
+          },
+          "group_sync_mode": {
+            "description": "Group sync mode",
+            "enum": [
+              "all",
+              "filtered",
+              "disabled"
+            ],
             "type": "string"
           },
           "id": {
             "description": "Directory ID",
+            "format": "uuid",
             "type": "string"
           },
           "impersonation_email": {
@@ -871,7 +1135,7 @@
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_disabled": {
@@ -882,14 +1146,18 @@
             "description": "Directory name",
             "type": "string"
           },
+          "orgunit_sync_enabled": {
+            "description": "Whether org unit sync is enabled",
+            "type": "boolean"
+          },
           "synced_at": {
             "description": "Last sync timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -904,17 +1172,24 @@
         "description": "Group",
         "example": {
           "directory_id": null,
+          "email": null,
           "entity_type": "group",
           "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
           "idp_id": null,
           "inserted_at": "2024-01-15T10:30:00Z",
-          "last_synced_at": null,
           "name": "Engineering",
+          "synced_at": null,
           "updated_at": "2024-01-15T10:30:00Z"
         },
         "properties": {
           "directory_id": {
             "description": "Directory ID this group belongs to",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "description": "Group email address for synced groups",
             "nullable": true,
             "type": "string"
           },
@@ -928,6 +1203,7 @@
           },
           "id": {
             "description": "Group ID",
+            "format": "uuid",
             "type": "string"
           },
           "idp_id": {
@@ -940,14 +1216,14 @@
             "format": "date-time",
             "type": "string"
           },
-          "last_synced_at": {
+          "name": {
+            "description": "Group Name",
+            "type": "string"
+          },
+          "synced_at": {
             "description": "Last sync timestamp for synced groups",
             "format": "date-time",
             "nullable": true,
-            "type": "string"
-          },
-          "name": {
-            "description": "Group Name",
             "type": "string"
           },
           "updated_at": {
@@ -988,9 +1264,15 @@
       "ClientPut": {
         "description": "Put schema for updating a single Client",
         "example": {
+          "hostname": "johns-macbook.example.com",
           "name": "John's Macbook Air"
         },
         "properties": {
+          "hostname": {
+            "description": "Client hostname (FQDN used for dynamic device pool DNS resolution)",
+            "nullable": true,
+            "type": "string"
+          },
           "name": {
             "description": "Client Name",
             "type": "string"
@@ -1002,10 +1284,23 @@
         "title": "ClientPut",
         "type": "object"
       },
-      "Site ID": {
-        "description": "Site to connect the Resource to",
-        "title": "Site ID",
-        "type": "string"
+      "ClientTokenRequest": {
+        "description": "POST body for creating a Client Token",
+        "example": {
+          "client_token": {
+            "expires_at": "2025-01-15T12:34:56.789Z"
+          }
+        },
+        "properties": {
+          "client_token": {
+            "$ref": "#/components/schemas/ClientTokenCreate"
+          }
+        },
+        "required": [
+          "client_token"
+        ],
+        "title": "ClientTokenRequest",
+        "type": "object"
       },
       "EntraDirectoryListResponse": {
         "description": "Response schema for multiple Entra Directories",
@@ -1060,20 +1355,13 @@
               "created_at": "2025-01-01T00:00:00Z",
               "device_serial": "GCCFX0DBQ6L5",
               "device_uuid": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
-              "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
               "firebase_installation_id": null,
+              "firezone_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+              "hostname": "johns-macbook.example.com",
               "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
               "identifier_for_vendor": null,
               "ipv4": "100.64.0.1",
               "ipv6": "fd00:2021:1111::1",
-              "last_seen_at": "2025-01-01T00:00:00Z",
-              "last_seen_remote_ip": "1.2.3.4",
-              "last_seen_remote_ip_location_city": "San Francisco",
-              "last_seen_remote_ip_location_lat": 37.7749,
-              "last_seen_remote_ip_location_lon": -122.4194,
-              "last_seen_remote_ip_location_region": "California",
-              "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
-              "last_seen_version": "1.4.5",
               "name": "John's Macbook Air",
               "online": true,
               "updated_at": "2025-01-01T00:00:00Z",
@@ -1084,20 +1372,13 @@
               "created_at": "2025-01-01T00:00:00Z",
               "device_serial": null,
               "device_uuid": null,
-              "external_id": "6c37c0042f40bbb16e007d0d6c8e77c0ac2cab3cc3b923c42d1157a934e436ac",
               "firebase_installation_id": null,
+              "firezone_id": "6c37c0042f40bbb16e007d0d6c8e77c0ac2cab3cc3b923c42d1157a934e436ac",
+              "hostname": null,
               "id": "9a7f82f-831a-4a9d-8f17-c66c2bb6e205",
               "identifier_for_vendor": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
               "ipv4": "100.64.0.2",
               "ipv6": "fd00:2021:1111::2",
-              "last_seen_at": "2025-01-01T00:00:00Z",
-              "last_seen_remote_ip": "1.2.3.4",
-              "last_seen_remote_ip_location_city": "San Francisco",
-              "last_seen_remote_ip_location_lat": 37.7749,
-              "last_seen_remote_ip_location_lon": -122.4194,
-              "last_seen_remote_ip_location_region": "California",
-              "last_seen_user_agent": "iOS/18.3.1 connlib/1.4.6 (24.3.0)",
-              "last_seen_version": "1.4.6",
               "name": "iPad",
               "online": false,
               "updated_at": "2025-01-01T00:00:00Z",
@@ -1139,21 +1420,24 @@
           "idp_id": "2551705710219359",
           "inserted_at": "2025-01-15T12:34:56.789Z",
           "issuer": "https://accounts.google.com",
-          "last_synced_at": "2025-01-15T12:34:56.789Z",
           "name": "John Doe",
-          "picture": "https://example.com/avatar.jpg"
+          "picture": "https://example.com/avatar.jpg",
+          "synced_at": "2025-01-15T12:34:56.789Z"
         },
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "actor_id": {
             "description": "Actor ID",
+            "format": "uuid",
             "type": "string"
           },
           "directory_id": {
             "description": "Directory UUID reference",
+            "format": "uuid",
             "type": "string"
           },
           "family_name": {
@@ -1170,6 +1454,7 @@
           },
           "id": {
             "description": "External Identity ID",
+            "format": "uuid",
             "type": "string"
           },
           "idp_id": {
@@ -1178,16 +1463,11 @@
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "issuer": {
             "description": "Identity issuer URL (e.g., 'https://accounts.google.com', 'https://company.okta.com')",
-            "type": "string"
-          },
-          "last_synced_at": {
-            "description": "Last sync timestamp",
-            "format": "datetime",
             "type": "string"
           },
           "middle_name": {
@@ -1212,6 +1492,11 @@
           },
           "profile": {
             "description": "Profile URL",
+            "type": "string"
+          },
+          "synced_at": {
+            "description": "Last sync timestamp",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -1258,6 +1543,47 @@
         "title": "GoogleDirectoryResponse",
         "type": "object"
       },
+      "ChangeLogsResponse": {
+        "description": "Response schema for a page of Change Log entries.\n\nEntries are returned in `event_id` order with the most recent change\nfirst. Each page contains at most 100 entries (50 by default); use the\n`metadata.next_page` cursor to fetch the following page.\n",
+        "example": {
+          "data": [
+            {
+              "after": {
+                "name": "Jane Smith"
+              },
+              "before": {
+                "name": "Jane Doe"
+              },
+              "event_id": "c00060db0c2c8eb400000000",
+              "object": "actors",
+              "operation": "update",
+              "subject": null,
+              "timestamp": "2026-05-26T12:34:56.789Z"
+            }
+          ],
+          "metadata": {
+            "count": 1,
+            "limit": 50,
+            "next_page": null,
+            "prev_page": null
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Change log entries for the requested window.",
+            "items": {
+              "$ref": "#/components/schemas/ChangeLog"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "type": "object"
+          }
+        },
+        "title": "ChangeLogsResponse",
+        "type": "object"
+      },
       "Site": {
         "description": "Site",
         "example": {
@@ -1267,6 +1593,7 @@
         "properties": {
           "id": {
             "description": "Site ID",
+            "format": "uuid",
             "type": "string"
           },
           "name": {
@@ -1281,30 +1608,35 @@
         "title": "Site",
         "type": "object"
       },
+      "SiteID": {
+        "description": "Site to connect the Resource to. Required for all types except `static_device_pool`.",
+        "format": "uuid",
+        "title": "SiteID",
+        "type": "string"
+      },
       "Client": {
         "description": "Client",
         "example": {
           "actor_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
           "created_at": "2025-01-01T00:00:00Z",
-          "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+          "device_serial": "GCCFX0DBQ6L5",
+          "device_uuid": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
+          "firebase_installation_id": null,
+          "firezone_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+          "hostname": "johns-macbook.example.com",
           "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "identifier_for_vendor": null,
           "ipv4": "100.64.0.1",
           "ipv6": "fd00:2021:1111::1",
-          "last_seen_at": "2025-01-01T00:00:00Z",
-          "last_seen_remote_ip": "1.2.3.4",
-          "last_seen_remote_ip_location_city": "San Francisco",
-          "last_seen_remote_ip_location_lat": 37.7749,
-          "last_seen_remote_ip_location_lon": -122.4194,
-          "last_seen_remote_ip_location_region": "California",
-          "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
-          "last_seen_version": "1.4.5",
           "name": "John's Macbook Air",
           "online": true,
-          "updated_at": "2025-01-01T00:00:00Z"
+          "updated_at": "2025-01-01T00:00:00Z",
+          "verified_at": "2025-01-01T00:00:00Z"
         },
         "properties": {
           "actor_id": {
             "description": "Actor ID",
+            "format": "uuid",
             "type": "string"
           },
           "created_at": {
@@ -1317,14 +1649,25 @@
           },
           "device_uuid": {
             "description": "Device manufacturer UUID (unavailable for mobile devices)",
+            "format": "uuid",
             "type": "string"
           },
           "firebase_installation_id": {
             "description": "Firebase installation ID (Android only)",
             "type": "string"
           },
+          "firezone_id": {
+            "description": "Firezone ID",
+            "type": "string"
+          },
+          "hostname": {
+            "description": "Client hostname (FQDN used for dynamic device pool DNS resolution)",
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "description": "Client ID",
+            "format": "uuid",
             "type": "string"
           },
           "identifier_for_vendor": {
@@ -1337,38 +1680,6 @@
           },
           "ipv6": {
             "description": "Tunnel IPv6 Address of Client",
-            "type": "string"
-          },
-          "last_seen_at": {
-            "description": "Last seen at",
-            "type": "string"
-          },
-          "last_seen_remote_ip": {
-            "description": "Last seen remote IP",
-            "type": "string"
-          },
-          "last_seen_remote_ip_location_city": {
-            "description": "Last seen remote IP location city",
-            "type": "string"
-          },
-          "last_seen_remote_ip_location_lat": {
-            "description": "Last seen remote IP location latitude",
-            "type": "number"
-          },
-          "last_seen_remote_ip_location_lon": {
-            "description": "Last seen remote IP location longitude",
-            "type": "number"
-          },
-          "last_seen_remote_ip_location_region": {
-            "description": "Last seen remote IP location region",
-            "type": "string"
-          },
-          "last_seen_user_agent": {
-            "description": "Last seen user agent",
-            "type": "string"
-          },
-          "last_seen_version": {
-            "description": "Last seen version",
             "type": "string"
           },
           "name": {
@@ -1391,19 +1702,11 @@
         "required": [
           "id",
           "actor_id",
-          "external_id",
+          "firezone_id",
           "name",
           "ipv4",
           "ipv6",
           "online",
-          "last_seen_user_agent",
-          "last_seen_remote_ip",
-          "last_seen_remote_ip_location_region",
-          "last_seen_remote_ip_location_city",
-          "last_seen_remote_ip_location_lat",
-          "last_seen_remote_ip_location_lon",
-          "last_seen_version",
-          "last_seen_at",
           "created_at",
           "updated_at"
         ],
@@ -1432,6 +1735,67 @@
         "title": "OktaDirectoryListResponse",
         "type": "object"
       },
+      "ClientTokenListResponse": {
+        "description": "Response schema for multiple Client Tokens",
+        "example": {
+          "data": [
+            {
+              "actor_id": "43a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "expires_at": "2025-01-15T12:34:56.789Z",
+              "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+              "inserted_at": "2025-01-15T12:34:56.789Z",
+              "updated_at": "2025-01-15T12:34:56.789Z"
+            }
+          ],
+          "metadata": {
+            "count": 1,
+            "limit": 10,
+            "next_page": null,
+            "prev_page": null
+          }
+        },
+        "properties": {
+          "data": {
+            "description": "Client Token metadata",
+            "items": {
+              "$ref": "#/components/schemas/ClientToken"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "description": "Pagination metadata",
+            "properties": {
+              "count": {
+                "description": "Total number of matching records",
+                "type": "integer"
+              },
+              "limit": {
+                "description": "Page size",
+                "type": "integer"
+              },
+              "next_page": {
+                "description": "Cursor to fetch the next page",
+                "nullable": true,
+                "type": "string"
+              },
+              "prev_page": {
+                "description": "Cursor to fetch the previous page",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "limit",
+              "next_page",
+              "prev_page"
+            ],
+            "type": "object"
+          }
+        },
+        "title": "ClientTokenListResponse",
+        "type": "object"
+      },
       "GoogleAuthProvider": {
         "description": "Google Auth Provider",
         "example": {
@@ -1442,6 +1806,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_session_lifetime_secs": {
@@ -1459,11 +1824,12 @@
           },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_default": {
@@ -1488,7 +1854,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -1530,6 +1896,7 @@
             "properties": {
               "id": {
                 "description": "Gateway Token ID",
+                "format": "uuid",
                 "type": "string"
               }
             },
@@ -1572,20 +1939,13 @@
             "created_at": "2025-01-01T00:00:00Z",
             "device_serial": "GCCFX0DBQ6L5",
             "device_uuid": "7A461FF9-0BE2-64A9-A418-539D9A21827B",
-            "external_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
             "firebase_installation_id": null,
+            "firezone_id": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+            "hostname": "johns-macbook.example.com",
             "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
             "identifier_for_vendor": null,
             "ipv4": "100.64.0.1",
             "ipv6": "fd00:2021:1111::1",
-            "last_seen_at": "2025-01-01T00:00:00Z",
-            "last_seen_remote_ip": "1.2.3.4",
-            "last_seen_remote_ip_location_city": "San Francisco",
-            "last_seen_remote_ip_location_lat": 37.7749,
-            "last_seen_remote_ip_location_lon": -122.4194,
-            "last_seen_remote_ip_location_region": "California",
-            "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
-            "last_seen_version": "1.4.5",
             "name": "John's Macbook Air",
             "online": true,
             "updated_at": "2025-01-01T00:00:00Z",
@@ -1598,6 +1958,52 @@
           }
         },
         "title": "ClientResponse",
+        "type": "object"
+      },
+      "ClientToken": {
+        "description": "Client Token metadata",
+        "example": {
+          "actor_id": "43a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "expires_at": "2025-01-15T12:34:56.789Z",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "inserted_at": "2025-01-15T12:34:56.789Z",
+          "updated_at": "2025-01-15T12:34:56.789Z"
+        },
+        "properties": {
+          "actor_id": {
+            "description": "Actor ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "expires_at": {
+            "description": "Expiration",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "Client Token ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "actor_id",
+          "expires_at",
+          "inserted_at",
+          "updated_at"
+        ],
+        "title": "ClientToken",
         "type": "object"
       },
       "MembershipListResponse": {
@@ -1651,9 +2057,9 @@
             "idp_id": "2551705710219359",
             "inserted_at": "2025-01-15T12:34:56.789Z",
             "issuer": "https://accounts.google.com",
-            "last_synced_at": "2025-01-15T12:34:56.789Z",
             "name": "John Doe",
-            "picture": "https://example.com/avatar.jpg"
+            "picture": "https://example.com/avatar.jpg",
+            "synced_at": "2025-01-15T12:34:56.789Z"
           }
         },
         "properties": {
@@ -1714,6 +2120,24 @@
         "title": "GatewayTokenResponse",
         "type": "object"
       },
+      "ClientTokenCreate": {
+        "description": "Client Token attributes",
+        "example": {
+          "expires_at": "2025-01-15T12:34:56.789Z"
+        },
+        "properties": {
+          "expires_at": {
+            "description": "Expiration",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expires_at"
+        ],
+        "title": "ClientTokenCreate",
+        "type": "object"
+      },
       "EntraAuthProvider": {
         "description": "Entra Auth Provider",
         "example": {
@@ -1724,6 +2148,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_session_lifetime_secs": {
@@ -1739,13 +2164,23 @@
             ],
             "type": "string"
           },
+          "email_claim": {
+            "description": "OIDC claim to use as email",
+            "enum": [
+              "email",
+              "upn",
+              "preferred_username"
+            ],
+            "type": "string"
+          },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_default": {
@@ -1770,7 +2205,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -1794,6 +2229,7 @@
           "properties": {
             "id": {
               "description": "Actor ID",
+              "format": "uuid",
               "type": "string"
             },
             "name": {
@@ -1815,6 +2251,13 @@
         "properties": {
           "id": {
             "description": "Account ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "key": {
+            "description": "6-character account key",
+            "maxLength": 6,
+            "minLength": 6,
             "type": "string"
           },
           "legal_name": {
@@ -1836,13 +2279,39 @@
         "required": [
           "id",
           "slug",
+          "key",
           "name"
         ],
         "title": "Account",
         "type": "object"
       },
+      "DeletedClientTokenResponse": {
+        "description": "Response schema for a deleted Client Token",
+        "example": {
+          "data": {
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205"
+          }
+        },
+        "properties": {
+          "data": {
+            "properties": {
+              "id": {
+                "description": "Client Token ID",
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "title": "DeletedClientTokenResponse",
+        "type": "object"
+      },
       "ResourceRequest": {
-        "description": "POST body for creating a Resource",
+        "description": "POST body for creating a Resource. `site_id` is required unless `type` is `static_device_pool`.",
         "example": {
           "resource": {
             "address": "10.0.0.10",
@@ -1865,6 +2334,7 @@
               },
               "id": {
                 "description": "Resource ID",
+                "format": "uuid",
                 "type": "string"
               },
               "ip_stack": {
@@ -1881,16 +2351,18 @@
                 "type": "string"
               },
               "site_id": {
-                "description": "Site to connect the Resource to",
-                "title": "Site ID",
+                "description": "Site to connect the Resource to. Required for all types except `static_device_pool`.",
+                "format": "uuid",
+                "title": "SiteID",
                 "type": "string"
               },
               "type": {
-                "description": "Resource type",
+                "description": "Resource type. For `static_device_pool`, `address` is not applicable.",
                 "enum": [
                   "cidr",
                   "ip",
-                  "dns"
+                  "dns",
+                  "static_device_pool"
                 ],
                 "type": "string"
               }
@@ -1908,6 +2380,7 @@
         "example": {
           "data": [
             {
+              "email_verification_method": "claim",
               "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
               "name": "OIDC Provider"
             }
@@ -2021,10 +2494,106 @@
         "title": "EntraDirectoryResponse",
         "type": "object"
       },
+      "ChangeLogResponse": {
+        "description": "Response schema for a single Change Log entry.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ChangeLog"
+          }
+        },
+        "title": "ChangeLogResponse",
+        "type": "object"
+      },
+      "ClientSession": {
+        "description": "Client Session",
+        "example": {
+          "client_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "client_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+          "created_at": "2025-01-01T00:00:00Z",
+          "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "last_seen_at": "2025-01-01T00:00:00Z",
+          "last_seen_remote_ip": "1.2.3.4",
+          "last_seen_remote_ip_location_city": "San Francisco",
+          "last_seen_remote_ip_location_lat": 37.7749,
+          "last_seen_remote_ip_location_lon": -122.4194,
+          "last_seen_remote_ip_location_region": "California",
+          "last_seen_user_agent": "Mac OS/15.1.1 connlib/1.4.5 (arm64; 24.1.0)",
+          "last_seen_version": "1.4.5",
+          "updated_at": "2025-01-01T00:00:00Z"
+        },
+        "properties": {
+          "client_id": {
+            "description": "Client ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "client_token_id": {
+            "description": "Client Token ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Session creation timestamp",
+            "type": "string"
+          },
+          "id": {
+            "description": "Client Session ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "description": "Timestamp of the session",
+            "type": "string"
+          },
+          "last_seen_remote_ip": {
+            "description": "Remote IP at time of session",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_city": {
+            "description": "Remote IP location city",
+            "type": "string"
+          },
+          "last_seen_remote_ip_location_lat": {
+            "description": "Remote IP location latitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_lon": {
+            "description": "Remote IP location longitude",
+            "type": "number"
+          },
+          "last_seen_remote_ip_location_region": {
+            "description": "Remote IP location region",
+            "type": "string"
+          },
+          "last_seen_user_agent": {
+            "description": "User agent at time of session",
+            "type": "string"
+          },
+          "last_seen_version": {
+            "description": "Client version at time of session",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Session update timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "client_id",
+          "client_token_id",
+          "last_seen_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientSession",
+        "type": "object"
+      },
       "OIDCAuthProviderResponse": {
         "description": "Response schema for single OIDC Auth Provider",
         "example": {
           "data": {
+            "email_verification_method": "claim",
             "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
             "name": "OIDC Provider"
           }
@@ -2035,6 +2604,87 @@
           }
         },
         "title": "OIDCAuthProviderResponse",
+        "type": "object"
+      },
+      "Subject": {
+        "description": "Identifies the actor and request context that initiated an action.\n\nUsed to describe the principal behind an audit log entry, an authorized\nflow, or any other event surfaced through the API. May be `null` when\nthe action originated outside the context of a Firezone session.\n",
+        "example": {
+          "actor_email": "admin@example.com",
+          "actor_id": "84e7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "actor_name": "Admin User",
+          "actor_type": "account_admin_user",
+          "auth_provider_id": "98776234-1234-5678-9012-345678901234",
+          "ip": "1.2.3.4",
+          "ip_city": "San Francisco",
+          "ip_lat": 37.7749,
+          "ip_lon": -122.4194,
+          "ip_region": "California",
+          "user_agent": "Mozilla/5.0"
+        },
+        "nullable": true,
+        "properties": {
+          "actor_email": {
+            "description": "Email address of the actor, if any.",
+            "nullable": true,
+            "type": "string"
+          },
+          "actor_id": {
+            "description": "Identifier of the actor that initiated the action.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "actor_name": {
+            "description": "Display name of the actor.",
+            "type": "string"
+          },
+          "actor_type": {
+            "description": "Type of the actor.",
+            "enum": [
+              "account_user",
+              "account_admin_user",
+              "service_account",
+              "api_client"
+            ],
+            "type": "string"
+          },
+          "auth_provider_id": {
+            "description": "Identifier of the authentication provider that authenticated the actor.",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "ip": {
+            "description": "IP address the action originated from.",
+            "nullable": true,
+            "type": "string"
+          },
+          "ip_city": {
+            "description": "Geo-located city for `ip`, if known.",
+            "nullable": true,
+            "type": "string"
+          },
+          "ip_lat": {
+            "description": "Geo-located latitude for `ip`, if known.",
+            "nullable": true,
+            "type": "number"
+          },
+          "ip_lon": {
+            "description": "Geo-located longitude for `ip`, if known.",
+            "nullable": true,
+            "type": "number"
+          },
+          "ip_region": {
+            "description": "Geo-located region for `ip`, if known.",
+            "nullable": true,
+            "type": "string"
+          },
+          "user_agent": {
+            "description": "User agent of the client that initiated the action.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "title": "Subject",
         "type": "object"
       },
       "MembershipPutRequest": {
@@ -2055,6 +2705,7 @@
               "properties": {
                 "actor_id": {
                   "description": "Actor ID",
+                  "format": "uuid",
                   "type": "string"
                 }
               },
@@ -2089,6 +2740,7 @@
           },
           "id": {
             "description": "Resource ID",
+            "format": "uuid",
             "type": "string"
           },
           "ip_stack": {
@@ -2105,24 +2757,25 @@
             "type": "string"
           },
           "site_id": {
-            "description": "Site to connect the Resource to",
-            "title": "Site ID",
+            "description": "Site to connect the Resource to. Required for all types except `static_device_pool`.",
+            "format": "uuid",
+            "title": "SiteID",
             "type": "string"
           },
           "type": {
-            "description": "Resource type",
+            "description": "Resource type. For `static_device_pool`, `address` is not applicable.",
             "enum": [
               "cidr",
               "ip",
-              "dns"
+              "dns",
+              "static_device_pool"
             ],
             "type": "string"
           }
         },
         "required": [
           "name",
-          "type",
-          "site_id"
+          "type"
         ],
         "title": "Resource",
         "type": "object"
@@ -2182,6 +2835,7 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_id": {
@@ -2202,16 +2856,17 @@
           },
           "error_emailed_at": {
             "description": "Error email timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "id": {
             "description": "Directory ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_disabled": {
@@ -2232,12 +2887,12 @@
           },
           "synced_at": {
             "description": "Last sync timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -2258,10 +2913,19 @@
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "disabled_reason": {
             "description": "Reason for disabling",
+            "type": "string"
+          },
+          "email_field": {
+            "description": "Graph API user field to use as email",
+            "enum": [
+              "mail",
+              "userPrincipalName"
+            ],
             "type": "string"
           },
           "error": {
@@ -2274,16 +2938,17 @@
           },
           "error_emailed_at": {
             "description": "Error email timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "id": {
             "description": "Directory ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_disabled": {
@@ -2300,16 +2965,17 @@
           },
           "synced_at": {
             "description": "Last sync timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "tenant_id": {
             "description": "Microsoft Entra tenant ID",
+            "format": "uuid",
             "type": "string"
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -2324,12 +2990,14 @@
         "description": "OIDC Auth Provider",
         "example": {
           "client_id": "my-client-id",
+          "email_verification_method": "claim",
           "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
           "name": "OIDC Provider"
         },
         "properties": {
           "account_id": {
             "description": "Account ID",
+            "format": "uuid",
             "type": "string"
           },
           "client_id": {
@@ -2353,13 +3021,23 @@
             "description": "Discovery document URI",
             "type": "string"
           },
+          "email_verification_method": {
+            "description": "How sign-in verifies the email claim",
+            "enum": [
+              "none",
+              "claim",
+              "proof"
+            ],
+            "type": "string"
+          },
           "id": {
             "description": "Provider ID",
+            "format": "uuid",
             "type": "string"
           },
           "inserted_at": {
             "description": "Creation timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           },
           "is_default": {
@@ -2384,7 +3062,7 @@
           },
           "updated_at": {
             "description": "Update timestamp",
-            "format": "datetime",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -2393,6 +3071,84 @@
           "name"
         ],
         "title": "OIDCAuthProvider",
+        "type": "object"
+      },
+      "ClientTokenResponse": {
+        "description": "Client Token response",
+        "example": {
+          "actor_id": "43a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "expires_at": "2025-01-15T12:34:56.789Z",
+          "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+          "inserted_at": "2025-01-15T12:34:56.789Z",
+          "token": "secret-token-here",
+          "updated_at": "2025-01-15T12:34:56.789Z"
+        },
+        "properties": {
+          "actor_id": {
+            "description": "Actor ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "expires_at": {
+            "description": "Expiration",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "Client Token ID",
+            "format": "uuid",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "token": {
+            "description": "Encoded token secret",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Update timestamp",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "actor_id",
+          "expires_at",
+          "inserted_at",
+          "updated_at",
+          "token"
+        ],
+        "title": "ClientTokenResponse",
+        "type": "object"
+      },
+      "GatewaySessionResponse": {
+        "description": "Response schema for single Gateway Session",
+        "example": {
+          "data": {
+            "created_at": "2025-01-01T00:00:00Z",
+            "gateway_id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "gateway_token_id": "6ecc106b-75c1-48a5-846c-14782180c1ff",
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "last_seen_at": "2025-01-01T00:00:00Z",
+            "last_seen_remote_ip": "1.2.3.4",
+            "last_seen_remote_ip_location_city": "San Francisco",
+            "last_seen_remote_ip_location_lat": 37.7749,
+            "last_seen_remote_ip_location_lon": -122.4194,
+            "last_seen_remote_ip_location_region": "California",
+            "last_seen_user_agent": "Linux/6.1.0 connlib/1.4.5 (x86_64)",
+            "last_seen_version": "1.4.5"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GatewaySession"
+          }
+        },
+        "title": "GatewaySessionResponse",
         "type": "object"
       },
       "MembershipResponse": {
@@ -2413,6 +3169,7 @@
                 "description": "Actor IDs",
                 "items": {
                   "description": "Actor ID",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "type": "array"
@@ -2430,22 +3187,24 @@
           "data": [
             {
               "directory_id": null,
+              "email": null,
               "entity_type": "group",
               "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
               "idp_id": null,
               "inserted_at": "2024-01-15T10:30:00Z",
-              "last_synced_at": null,
               "name": "Engineering",
+              "synced_at": null,
               "updated_at": "2024-01-15T10:30:00Z"
             },
             {
               "directory_id": "6b4e3a2c-1234-5678-9abc-def012345678",
+              "email": "firezone-sync-admins@example.com",
               "entity_type": "group",
               "id": "4ae929a7-1973-43f2-a1a8-9221b91a4c0e",
               "idp_id": "google-workspace-group-123",
               "inserted_at": "2024-01-10T08:15:00Z",
-              "last_synced_at": "2024-01-14T16:00:00Z",
-              "name": "Finance",
+              "name": "firezone-sync-admins",
+              "synced_at": "2024-01-14T16:00:00Z",
               "updated_at": "2024-01-14T16:45:00Z"
             }
           ],
@@ -2472,6 +3231,87 @@
         "title": "GroupListResponse",
         "type": "object"
       },
+      "ChangeLog": {
+        "description": "A single entry from the account audit log.\n\nEach entry records one create, update, or delete event against an\naccount-scoped object. Entries are returned in time-based order with\nthe most recent change first.\n",
+        "example": {
+          "after": {
+            "email": "jane.smith@example.com",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Jane Smith"
+          },
+          "before": {
+            "email": "jane@example.com",
+            "id": "42a7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "name": "Jane Doe"
+          },
+          "event_id": "c00060db0c2c8eb400000000",
+          "object": "actors",
+          "operation": "update",
+          "subject": {
+            "actor_email": "admin@example.com",
+            "actor_id": "84e7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "actor_name": "Admin User",
+            "actor_type": "account_admin_user",
+            "auth_provider_id": "98776234-1234-5678-9012-345678901234",
+            "ip": "1.2.3.4",
+            "ip_city": "San Francisco",
+            "ip_lat": 37.7749,
+            "ip_lon": -122.4194,
+            "ip_region": "California",
+            "user_agent": "Mozilla/5.0"
+          },
+          "timestamp": "2026-05-26T12:34:56.789Z"
+        },
+        "properties": {
+          "after": {
+            "additionalProperties": true,
+            "description": "The state of the object after the change. `null` for `delete`\nevents. Sensitive fields such as tokens, secrets, and password\nhashes are replaced with the literal string `\"[redacted]\"`.\n",
+            "nullable": true,
+            "type": "object"
+          },
+          "before": {
+            "additionalProperties": true,
+            "description": "The state of the object before the change. `null` for `insert`\nevents. Sensitive fields such as tokens, secrets, and password\nhashes are replaced with the literal string `\"[redacted]\"`.\n",
+            "nullable": true,
+            "type": "object"
+          },
+          "event_id": {
+            "description": "Opaque identifier for the audit log entry. A 24-character lowercase\nhexadecimal string, lexicographically sortable within an account and\naligned with the order changes were committed.\n",
+            "example": "c00060db0c2c8eb400000000",
+            "type": "string"
+          },
+          "object": {
+            "description": "The kind of object that was changed.",
+            "example": "actors",
+            "type": "string"
+          },
+          "operation": {
+            "description": "The kind of change that was applied.",
+            "enum": [
+              "insert",
+              "update",
+              "delete"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Subject"
+          },
+          "timestamp": {
+            "description": "RFC 3339 timestamp identifying when the change was committed.",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id",
+          "timestamp",
+          "object",
+          "operation"
+        ],
+        "title": "ChangeLog",
+        "type": "object"
+      },
       "Gateway": {
         "description": "Gateway",
         "example": {
@@ -2484,6 +3324,7 @@
         "properties": {
           "id": {
             "description": "Gateway ID",
+            "format": "uuid",
             "type": "string"
           },
           "ipv4": {
@@ -2603,6 +3444,7 @@
     }
   },
   "info": {
+    "description": "The Firezone REST API is eventually consistent. After creating or updating a resource, it may take a second or two for the change to be reflected in subsequent read requests. If you receive a 404 for a recently created or updated entity, wait briefly and retry the request.",
     "title": "Firezone API",
     "version": "1.0"
   },
@@ -2610,9 +3452,7 @@
   "paths": {
     "/userpass_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.UserpassAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -2635,9 +3475,7 @@
     },
     "/okta_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OktaAuthProviderController.show",
         "parameters": [
           {
@@ -2671,9 +3509,7 @@
     },
     "/groups": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.index",
         "parameters": [
           {
@@ -2714,9 +3550,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.create",
         "parameters": [],
         "requestBody": {
@@ -2750,9 +3584,7 @@
     },
     "/email_otp_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EmailOTPAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -2775,9 +3607,7 @@
     },
     "/oidc_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OIDCAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -2800,9 +3630,7 @@
     },
     "/sites/{site_id}/gateway_tokens": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayTokenController.delete_all",
         "parameters": [
           {
@@ -2834,9 +3662,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayTokenController.create",
         "parameters": [
           {
@@ -2870,9 +3696,7 @@
     },
     "/account": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.AccountController.show",
         "parameters": [],
         "responses": {
@@ -2895,9 +3719,7 @@
     },
     "/sites": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.index",
         "parameters": [
           {
@@ -2938,9 +3760,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.create",
         "parameters": [],
         "requestBody": {
@@ -2974,9 +3794,7 @@
     },
     "/clients/{id}/verify": {
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.verify",
         "parameters": [
           {
@@ -3008,11 +3826,43 @@
         ]
       }
     },
+    "/gateway_sessions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.GatewaySessionController.index",
+        "parameters": [
+          {
+            "description": "Filter by Gateway ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "query",
+            "name": "gateway_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewaySessionsResponse"
+                }
+              }
+            },
+            "description": "Gateway Sessions Response"
+          }
+        },
+        "summary": "List Gateway Sessions",
+        "tags": [
+          "Gateway Sessions"
+        ]
+      }
+    },
     "/clients/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.delete",
         "parameters": [
           {
@@ -3044,9 +3894,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.show",
         "parameters": [
           {
@@ -3078,9 +3926,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.update (2)",
         "parameters": [
           {
@@ -3123,9 +3969,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.update",
         "parameters": [
           {
@@ -3170,9 +4014,7 @@
     },
     "/groups/{group_id}/memberships": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.MembershipController.index",
         "parameters": [
           {
@@ -3223,9 +4065,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.MembershipController.update_patch",
         "parameters": [
           {
@@ -3268,9 +4108,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.MembershipController.update_put",
         "parameters": [
           {
@@ -3315,9 +4153,7 @@
     },
     "/sites/{site_id}/gateway_tokens/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayTokenController.delete",
         "parameters": [
           {
@@ -3361,9 +4197,7 @@
     },
     "/actors/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ActorController.delete",
         "parameters": [
           {
@@ -3395,9 +4229,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ActorController.show",
         "parameters": [
           {
@@ -3429,9 +4261,8 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
+        "description": "Updates an Actor.\n\n**Warning: changing an Actor's email signs them out and unlinks their identity providers.**\n\nIf the `email` field is changed to a different address, Firezone will:\n\n- Unlink every identity provider (Google, Okta, Entra, etc.) connected to this Actor.\n- End all active sessions for this Actor, both in the admin portal and on\n  connected Client devices. The user will be signed out immediately.\n\nThe Actor will need to sign in again through their identity provider, which\nre-links it under the new email.\n\nEmail comparison ignores case and surrounding whitespace, so changes like\n`User@Example.com` → `user@example.com` are not treated as a real change\nand will not unlink identities.\n",
         "operationId": "PortalAPI.ActorController.update (2)",
         "parameters": [
           {
@@ -3474,9 +4305,8 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
+        "description": "Updates an Actor.\n\n**Warning: changing an Actor's email signs them out and unlinks their identity providers.**\n\nIf the `email` field is changed to a different address, Firezone will:\n\n- Unlink every identity provider (Google, Okta, Entra, etc.) connected to this Actor.\n- End all active sessions for this Actor, both in the admin portal and on\n  connected Client devices. The user will be signed out immediately.\n\nThe Actor will need to sign in again through their identity provider, which\nre-links it under the new email.\n\nEmail comparison ignores case and surrounding whitespace, so changes like\n`User@Example.com` → `user@example.com` are not treated as a real change\nand will not unlink identities.\n",
         "operationId": "PortalAPI.ActorController.update",
         "parameters": [
           {
@@ -3521,9 +4351,7 @@
     },
     "/entra_directories/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EntraDirectoryController.show",
         "parameters": [
           {
@@ -3555,11 +4383,93 @@
         ]
       }
     },
+    "/change_logs": {
+      "get": {
+        "callbacks": {},
+        "description": "Lists audit Change Log entries for the authenticated account.\n\nEach entry records a single insert, update, or delete event against an\naccount-scoped object. Entries are returned in `event_id` order with\nthe most recent change first.\n\nThe `begin` and `end` query parameters bound the window in which to\nlook up Change Logs by their `timestamp`. Both must be RFC 3339 (ISO\n8601) timestamps, for example `2026-05-26T00:00:00Z`; values with a\nnon-UTC offset are accepted and converted to UTC. When omitted,\n`begin` defaults to 90 days before the current time and `end`\ndefaults to the current time. `begin` must be less than or equal to\n`end`.\n\nResults can be further narrowed by `actor_id` or `actor_email`, which\nmatch against the corresponding fields on the entry's `subject`.\n\nUse the `next_page` cursor returned in `metadata` to fetch the\nfollowing page of results.\n",
+        "operationId": "PortalAPI.ChangeLogController.index",
+        "parameters": [
+          {
+            "description": "Maximum number of Change Logs to return per page. Defaults to 50.\nValues greater than 100 are capped to 100, and values less than 1\nare raised to 1.\n",
+            "example": 50,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor returned by a previous request.",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Inclusive lower bound on `timestamp`. RFC 3339 timestamp; non-UTC\noffsets are accepted and converted to UTC. Defaults to 90 days\nbefore the current time when omitted.\n",
+            "example": "2026-02-25T00:00:00Z",
+            "in": "query",
+            "name": "begin",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Inclusive upper bound on `timestamp`. RFC 3339 timestamp; non-UTC\noffsets are accepted and converted to UTC. Defaults to the current\ntime when omitted.\n",
+            "example": "2026-05-26T00:00:00Z",
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter to entries whose `subject.actor_id` matches.",
+            "example": "84e7f82f-831a-4a9d-8f17-c66c2bb6e205",
+            "in": "query",
+            "name": "actor_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter to entries whose `subject.actor_email` matches.",
+            "example": "admin@example.com",
+            "in": "query",
+            "name": "actor_email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeLogsResponse"
+                }
+              }
+            },
+            "description": "Change Logs Response"
+          }
+        },
+        "summary": "List Change Logs",
+        "tags": [
+          "Change Logs"
+        ]
+      }
+    },
     "/actors/{actor_id}/external_identities": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ExternalIdentityController.index",
         "parameters": [
           {
@@ -3610,9 +4520,7 @@
     },
     "/okta_directories": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OktaDirectoryController.index",
         "parameters": [],
         "responses": {
@@ -3635,9 +4543,7 @@
     },
     "/clients": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.index",
         "parameters": [
           {
@@ -3680,9 +4586,7 @@
     },
     "/google_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GoogleAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -3703,11 +4607,44 @@
         ]
       }
     },
+    "/change_logs/{event_id}": {
+      "get": {
+        "callbacks": {},
+        "description": "Fetches a single Change Log entry by its `event_id`.\n",
+        "operationId": "PortalAPI.ChangeLogController.show",
+        "parameters": [
+          {
+            "description": "Identifier of the Change Log entry. A 24-character lowercase hexadecimal string.",
+            "example": "c00060db0c2c8eb400000000",
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeLogResponse"
+                }
+              }
+            },
+            "description": "Change Log Response"
+          }
+        },
+        "summary": "Show Change Log",
+        "tags": [
+          "Change Logs"
+        ]
+      }
+    },
     "/entra_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EntraAuthProviderController.show",
         "parameters": [
           {
@@ -3741,9 +4678,7 @@
     },
     "/policies/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.delete",
         "parameters": [
           {
@@ -3775,9 +4710,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.show",
         "parameters": [
           {
@@ -3809,9 +4742,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.update (2)",
         "parameters": [
           {
@@ -3854,9 +4785,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.update",
         "parameters": [
           {
@@ -3901,9 +4830,7 @@
     },
     "/email_otp_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EmailOTPAuthProviderController.show",
         "parameters": [
           {
@@ -3937,9 +4864,7 @@
     },
     "/okta_directories/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OktaDirectoryController.show",
         "parameters": [
           {
@@ -3973,9 +4898,7 @@
     },
     "/google_directories": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GoogleDirectoryController.index",
         "parameters": [],
         "responses": {
@@ -3998,9 +4921,7 @@
     },
     "/sites/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.delete",
         "parameters": [
           {
@@ -4032,9 +4953,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.show",
         "parameters": [
           {
@@ -4066,9 +4985,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.update (2)",
         "parameters": [
           {
@@ -4111,9 +5028,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.SiteController.update",
         "parameters": [
           {
@@ -4158,9 +5073,7 @@
     },
     "/entra_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EntraAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -4183,9 +5096,7 @@
     },
     "/userpass_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.UserpassAuthProviderController.show",
         "parameters": [
           {
@@ -4219,9 +5130,7 @@
     },
     "/entra_directories": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.EntraDirectoryController.index",
         "parameters": [],
         "responses": {
@@ -4244,9 +5153,7 @@
     },
     "/policies": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.index",
         "parameters": [
           {
@@ -4287,9 +5194,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.PolicyController.create",
         "parameters": [],
         "requestBody": {
@@ -4323,9 +5228,7 @@
     },
     "/okta_auth_providers": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OktaAuthProviderController.index",
         "parameters": [],
         "responses": {
@@ -4346,11 +5249,43 @@
         ]
       }
     },
+    "/gateway_sessions/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.GatewaySessionController.show",
+        "parameters": [
+          {
+            "description": "Gateway Session ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewaySessionResponse"
+                }
+              }
+            },
+            "description": "Gateway Session Response"
+          }
+        },
+        "summary": "Show Gateway Session",
+        "tags": [
+          "Gateway Sessions"
+        ]
+      }
+    },
     "/clients/{id}/unverify": {
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ClientController.unverify",
         "parameters": [
           {
@@ -4382,11 +5317,95 @@
         ]
       }
     },
+    "/actors/{actor_id}/client_tokens/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientTokenController.delete",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Client Token ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedClientTokenResponse"
+                }
+              }
+            },
+            "description": "Deleted Client Token Response"
+          }
+        },
+        "summary": "Delete a Client Token",
+        "tags": [
+          "Client Tokens"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientTokenController.show",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Client Token ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientTokenResponse"
+                }
+              }
+            },
+            "description": "Client Token Response"
+          }
+        },
+        "summary": "Show a Client Token for service_account, account_user, or account_admin_user actors",
+        "tags": [
+          "Client Tokens"
+        ]
+      }
+    },
     "/resources": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.index",
         "parameters": [
           {
@@ -4427,9 +5446,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.create",
         "parameters": [],
         "requestBody": {
@@ -4463,9 +5480,7 @@
     },
     "/actors/{actor_id}/external_identities/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ExternalIdentityController.delete",
         "parameters": [
           {
@@ -4507,9 +5522,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ExternalIdentityController.show",
         "parameters": [
           {
@@ -4553,9 +5566,7 @@
     },
     "/groups/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.delete",
         "parameters": [
           {
@@ -4587,9 +5598,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.show",
         "parameters": [
           {
@@ -4621,9 +5630,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.update (2)",
         "parameters": [
           {
@@ -4666,9 +5673,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GroupController.update",
         "parameters": [
           {
@@ -4711,11 +5716,43 @@
         ]
       }
     },
+    "/client_sessions/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientSessionController.show",
+        "parameters": [
+          {
+            "description": "Client Session ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientSessionResponse"
+                }
+              }
+            },
+            "description": "Client Session Response"
+          }
+        },
+        "summary": "Show Client Session",
+        "tags": [
+          "Client Sessions"
+        ]
+      }
+    },
     "/google_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GoogleAuthProviderController.show",
         "parameters": [
           {
@@ -4749,9 +5786,7 @@
     },
     "/sites/{site_id}/gateways": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayController.index",
         "parameters": [
           {
@@ -4802,11 +5837,136 @@
         ]
       }
     },
+    "/actors/{actor_id}/client_tokens": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientTokenController.delete_all",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedClientTokensResponse"
+                }
+              }
+            },
+            "description": "Deleted Client Tokens Response"
+          }
+        },
+        "summary": "Delete all Client Tokens for service_account, account_user, or account_admin_user actors",
+        "tags": [
+          "Client Tokens"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientTokenController.index",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Limit Client Tokens returned",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientTokenListResponse"
+                }
+              }
+            },
+            "description": "Client Token List Response"
+          }
+        },
+        "summary": "List Client Tokens for service_account, account_user, or account_admin_user actors",
+        "tags": [
+          "Client Tokens"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientTokenController.create",
+        "parameters": [
+          {
+            "description": "Actor ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "path",
+            "name": "actor_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientTokenRequest"
+              }
+            }
+          },
+          "description": "Client Token Attributes",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientTokenCreateResponse"
+                }
+              }
+            },
+            "description": "Client Token Response"
+          }
+        },
+        "summary": "Create a Client Token for a Service Account",
+        "tags": [
+          "Client Tokens"
+        ]
+      }
+    },
     "/oidc_auth_providers/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.OIDCAuthProviderController.show",
         "parameters": [
           {
@@ -4840,9 +6000,7 @@
     },
     "/actors": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ActorController.index",
         "parameters": [
           {
@@ -4883,9 +6041,7 @@
         ]
       },
       "post": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ActorController.create",
         "parameters": [],
         "requestBody": {
@@ -4919,9 +6075,7 @@
     },
     "/sites/{site_id}/gateways/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayController.delete",
         "parameters": [
           {
@@ -4963,9 +6117,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GatewayController.show",
         "parameters": [
           {
@@ -5007,11 +6159,62 @@
         ]
       }
     },
+    "/client_sessions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PortalAPI.ClientSessionController.index",
+        "parameters": [
+          {
+            "description": "Limit Client Sessions returned",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Next/Prev page cursor",
+            "in": "query",
+            "name": "page_cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by Client ID",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "in": "query",
+            "name": "client_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientSessionsResponse"
+                }
+              }
+            },
+            "description": "Client Sessions Response"
+          }
+        },
+        "summary": "List Client Sessions",
+        "tags": [
+          "Client Sessions"
+        ]
+      }
+    },
     "/google_directories/{id}": {
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.GoogleDirectoryController.show",
         "parameters": [
           {
@@ -5045,9 +6248,7 @@
     },
     "/resources/{id}": {
       "delete": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.delete",
         "parameters": [
           {
@@ -5079,9 +6280,7 @@
         ]
       },
       "get": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.show",
         "parameters": [
           {
@@ -5113,9 +6312,7 @@
         ]
       },
       "patch": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.update (2)",
         "parameters": [
           {
@@ -5158,9 +6355,7 @@
         ]
       },
       "put": {
-        "callbacks": {
-
-        },
+        "callbacks": {},
         "operationId": "PortalAPI.ResourceController.update",
         "parameters": [
           {
@@ -5212,9 +6407,7 @@
   "servers": [
     {
       "url": "https://firezone-api.us-services.cardoaiapps.com",
-      "variables": {
-
-      }
+      "variables": {}
     }
   ],
   "tags": []

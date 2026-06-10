@@ -189,54 +189,32 @@ func (r *OIDCAuthProviderResource) Read(ctx context.Context, req resource.ReadRe
 }
 
 func (r *OIDCAuthProviderResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data OIDCAuthProviderResourceModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	// The Firezone API has no PATCH/PUT endpoint for OIDC auth providers.
+	// Re-read current state from the API and preserve plan values for write-only fields.
+	var plan OIDCAuthProviderResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	reqBody := map[string]interface{}{
-		"provider": map[string]interface{}{
-			"name":                   data.Name.ValueString(),
-			"client_id":              data.ClientID.ValueString(),
-			"client_secret":          data.ClientSecret.ValueString(),
-			"discovery_document_uri": data.DiscoveryDocumentURI.ValueString(),
-			"context":                data.Context.ValueString(),
-			"is_default":             data.IsDefault.ValueBool(),
-			"is_disabled":            data.IsDisabled.ValueBool(),
-		},
-	}
-
-	// Only include optional fields if they are explicitly set
-	provider := reqBody["provider"].(map[string]interface{})
-	if !data.Scope.IsNull() && !data.Scope.IsUnknown() {
-		provider["scope"] = data.Scope.ValueString()
-	}
-	if !data.ClientSessionLifetimeSecs.IsNull() && !data.ClientSessionLifetimeSecs.IsUnknown() {
-		provider["client_session_lifetime_secs"] = data.ClientSessionLifetimeSecs.ValueInt64()
-	}
-	if !data.PortalSessionLifetimeSecs.IsNull() && !data.PortalSessionLifetimeSecs.IsUnknown() {
-		provider["portal_session_lifetime_secs"] = data.PortalSessionLifetimeSecs.ValueInt64()
-	}
-
-	body, err := r.client.doRequest("PUT", "/oidc_auth_providers/"+data.ID.ValueString(), reqBody)
+	body, err := r.client.doRequest("GET", "/oidc_auth_providers/"+plan.ID.ValueString(), nil)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update OIDC auth provider: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read OIDC auth provider: %s", err))
 		return
 	}
 
 	var result struct {
 		Data struct {
-			ID                        string `json:"id"`
-			Name                      string `json:"name"`
-			ClientID                  string `json:"client_id"`
-			DiscoveryDocumentURI      string `json:"discovery_document_uri"`
-			Scope                     string `json:"scope"`
-			Context                   string `json:"context"`
-			IsDefault                 bool   `json:"is_default"`
-			IsDisabled                bool   `json:"is_disabled"`
-			ClientSessionLifetimeSecs int64  `json:"client_session_lifetime_secs"`
-			PortalSessionLifetimeSecs int64  `json:"portal_session_lifetime_secs"`
+			ID                        string  `json:"id"`
+			Name                      string  `json:"name"`
+			ClientID                  string  `json:"client_id"`
+			DiscoveryDocumentURI      string  `json:"discovery_document_uri"`
+			Scope                     *string `json:"scope"`
+			Context                   string  `json:"context"`
+			IsDefault                 bool    `json:"is_default"`
+			IsDisabled                bool    `json:"is_disabled"`
+			ClientSessionLifetimeSecs *int64  `json:"client_session_lifetime_secs"`
+			PortalSessionLifetimeSecs *int64  `json:"portal_session_lifetime_secs"`
 		} `json:"data"`
 	}
 
@@ -245,31 +223,34 @@ func (r *OIDCAuthProviderResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	data.Name = types.StringValue(result.Data.Name)
-	data.ClientID = types.StringValue(result.Data.ClientID)
-	data.DiscoveryDocumentURI = types.StringValue(result.Data.DiscoveryDocumentURI)
-	data.Scope = types.StringValue(result.Data.Scope)
-	data.Context = types.StringValue(result.Data.Context)
-	data.IsDefault = types.BoolValue(result.Data.IsDefault)
-	data.IsDisabled = types.BoolValue(result.Data.IsDisabled)
-	data.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
-	data.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
+	plan.Name = types.StringValue(result.Data.Name)
+	plan.ClientID = types.StringValue(result.Data.ClientID)
+	plan.DiscoveryDocumentURI = types.StringValue(result.Data.DiscoveryDocumentURI)
+	if result.Data.Scope != nil && *result.Data.Scope != "" {
+		plan.Scope = types.StringValue(*result.Data.Scope)
+	} else {
+		plan.Scope = types.StringNull()
+	}
+	plan.Context = types.StringValue(result.Data.Context)
+	plan.IsDefault = types.BoolValue(result.Data.IsDefault)
+	plan.IsDisabled = types.BoolValue(result.Data.IsDisabled)
+	if result.Data.ClientSessionLifetimeSecs != nil {
+		plan.ClientSessionLifetimeSecs = types.Int64Value(*result.Data.ClientSessionLifetimeSecs)
+	} else {
+		plan.ClientSessionLifetimeSecs = types.Int64Null()
+	}
+	if result.Data.PortalSessionLifetimeSecs != nil {
+		plan.PortalSessionLifetimeSecs = types.Int64Value(*result.Data.PortalSessionLifetimeSecs)
+	} else {
+		plan.PortalSessionLifetimeSecs = types.Int64Null()
+	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *OIDCAuthProviderResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data OIDCAuthProviderResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	_, err := r.client.doRequest("DELETE", "/oidc_auth_providers/"+data.ID.ValueString(), nil)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete OIDC auth provider: %s", err))
-		return
-	}
+	// The Firezone API has no DELETE endpoint for OIDC auth providers.
+	// Remove from Terraform state only; the provider must be deleted manually via the admin portal.
 }
 
 func (r *OIDCAuthProviderResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

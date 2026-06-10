@@ -60,7 +60,7 @@ func NewClient(baseURL, apiKey string) *Client {
 	return &Client{
 		BaseURL:     baseURL,
 		ApiKey:      apiKey,
-		HTTPClient:  &http.Client{},
+		HTTPClient:  &http.Client{Timeout: 30 * time.Second},
 		MaxRetries:  20,
 		RetryDelay:  2 * time.Second,
 		rateLimiter: getGlobalRateLimiter(),
@@ -126,7 +126,7 @@ func (c *Client) doRequest(method, path string, body interface{}) ([]byte, error
 				// Check for Retry-After header
 				retryAfter := resp.Header.Get("Retry-After")
 				var backoff time.Duration
-				
+
 				if retryAfter != "" {
 					// Try to parse Retry-After as seconds
 					if seconds, err := strconv.Atoi(retryAfter); err == nil {
@@ -138,12 +138,24 @@ func (c *Client) doRequest(method, path string, body interface{}) ([]byte, error
 				} else {
 					backoff = c.calculateBackoffWithJitter(attempt)
 				}
-				
+
 				fmt.Printf("Rate limited, retrying in %v (attempt %d/%d)...\n", backoff, attempt+1, c.MaxRetries)
 				time.Sleep(backoff)
 				continue
 			}
 			return nil, fmt.Errorf("rate limit exceeded after %d retries", c.MaxRetries)
+		}
+
+		// Handle transient gateway/server errors (502, 503, 504) — retry with backoff
+		if resp.StatusCode == 502 || resp.StatusCode == 503 || resp.StatusCode == 504 {
+			lastErr = fmt.Errorf("API error: %s - %s", resp.Status, string(respBody))
+			if attempt < c.MaxRetries {
+				backoff := c.calculateBackoffWithJitter(attempt)
+				fmt.Printf("Transient server error %d, retrying in %v (attempt %d/%d)...\n", resp.StatusCode, backoff, attempt+1, c.MaxRetries)
+				time.Sleep(backoff)
+				continue
+			}
+			return nil, lastErr
 		}
 
 		// Handle other errors

@@ -50,7 +50,7 @@ fi
 echo "Building version: ${VERSION}"
 
 # Create build directory
-BUILD_DIR="./dist"
+BUILD_DIR="../dist"
 mkdir -p "${BUILD_DIR}"
 
 # Architectures and OS to build for
@@ -69,7 +69,7 @@ for PLATFORM in "${PLATFORMS[@]}"; do
     echo "Building for ${OS}/${ARCH}..."
     
     OUTPUT_NAME="terraform-provider-${PROVIDER_NAME}_v${VERSION}"
-    GOOS="${OS}" GOARCH="${ARCH}" go build -o "${BUILD_DIR}/${OUTPUT_NAME}_${OS}_${ARCH}" .
+    GOOS="${OS}" GOARCH="${ARCH}" go build -o "${BUILD_DIR}/${OUTPUT_NAME}_${OS}_${ARCH}" ../
     
     echo "✅ Built ${OUTPUT_NAME}_${OS}_${ARCH}"
 done

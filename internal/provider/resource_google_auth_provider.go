@@ -116,59 +116,13 @@ func (r *GoogleAuthProviderResource) Configure(ctx context.Context, req resource
 }
 
 func (r *GoogleAuthProviderResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data GoogleAuthProviderResourceModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	reqBody := map[string]interface{}{
-		"provider": map[string]interface{}{
-			"name":                          data.Name.ValueString(),
-			"client_id":                     data.ClientID.ValueString(),
-			"client_secret":                 data.ClientSecret.ValueString(),
-			"context":                       data.Context.ValueString(),
-			"is_default":                    data.IsDefault.ValueBool(),
-			"is_disabled":                   data.IsDisabled.ValueBool(),
-			"client_session_lifetime_secs":  data.ClientSessionLifetimeSecs.ValueInt64(),
-			"portal_session_lifetime_secs":  data.PortalSessionLifetimeSecs.ValueInt64(),
-		},
-	}
-
-	body, err := r.client.doRequest("POST", "/google_auth_providers", reqBody)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Google auth provider: %s", err))
-		return
-	}
-
-	var result struct {
-		Data struct {
-			ID                        string `json:"id"`
-			Name                      string `json:"name"`
-			ClientID                  string `json:"client_id"`
-			Context                   string `json:"context"`
-			IsDefault                 bool   `json:"is_default"`
-			IsDisabled                bool   `json:"is_disabled"`
-			ClientSessionLifetimeSecs int64  `json:"client_session_lifetime_secs"`
-			PortalSessionLifetimeSecs int64  `json:"portal_session_lifetime_secs"`
-		} `json:"data"`
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		resp.Diagnostics.AddError("Parse Error", fmt.Sprintf("Unable to parse response: %s", err))
-		return
-	}
-
-	data.ID = types.StringValue(result.Data.ID)
-	data.Name = types.StringValue(result.Data.Name)
-	data.ClientID = types.StringValue(result.Data.ClientID)
-	data.Context = types.StringValue(result.Data.Context)
-	data.IsDefault = types.BoolValue(result.Data.IsDefault)
-	data.IsDisabled = types.BoolValue(result.Data.IsDisabled)
-	data.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
-	data.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.AddError(
+		"Google Auth Provider Creation Not Supported",
+		"Firezone does not support creating Google authentication providers via API. "+
+			"Please create the Google provider manually in the Firezone admin portal, then import it into Terraform using:\n\n"+
+			"  terraform import firezone_google_auth_provider.<name> <provider_id>\n\n"+
+			"You can find the provider ID in the Firezone UI or by listing providers via the API.",
+	)
 }
 
 func (r *GoogleAuthProviderResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -214,28 +168,17 @@ func (r *GoogleAuthProviderResource) Read(ctx context.Context, req resource.Read
 }
 
 func (r *GoogleAuthProviderResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data GoogleAuthProviderResourceModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	// The Firezone API has no PATCH/PUT endpoint for Google auth providers.
+	// Re-read current state from the API and preserve plan values for write-only fields.
+	var plan GoogleAuthProviderResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	reqBody := map[string]interface{}{
-		"provider": map[string]interface{}{
-			"name":                          data.Name.ValueString(),
-			"client_id":                     data.ClientID.ValueString(),
-			"client_secret":                 data.ClientSecret.ValueString(),
-			"context":                       data.Context.ValueString(),
-			"is_default":                    data.IsDefault.ValueBool(),
-			"is_disabled":                   data.IsDisabled.ValueBool(),
-			"client_session_lifetime_secs":  data.ClientSessionLifetimeSecs.ValueInt64(),
-			"portal_session_lifetime_secs":  data.PortalSessionLifetimeSecs.ValueInt64(),
-		},
-	}
-
-	body, err := r.client.doRequest("PUT", "/google_auth_providers/"+data.ID.ValueString(), reqBody)
+	body, err := r.client.doRequest("GET", "/google_auth_providers/"+plan.ID.ValueString(), nil)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Google auth provider: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read Google auth provider: %s", err))
 		return
 	}
 
@@ -257,29 +200,20 @@ func (r *GoogleAuthProviderResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	data.Name = types.StringValue(result.Data.Name)
-	data.ClientID = types.StringValue(result.Data.ClientID)
-	data.Context = types.StringValue(result.Data.Context)
-	data.IsDefault = types.BoolValue(result.Data.IsDefault)
-	data.IsDisabled = types.BoolValue(result.Data.IsDisabled)
-	data.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
-	data.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
+	plan.Name = types.StringValue(result.Data.Name)
+	plan.ClientID = types.StringValue(result.Data.ClientID)
+	plan.Context = types.StringValue(result.Data.Context)
+	plan.IsDefault = types.BoolValue(result.Data.IsDefault)
+	plan.IsDisabled = types.BoolValue(result.Data.IsDisabled)
+	plan.ClientSessionLifetimeSecs = types.Int64Value(result.Data.ClientSessionLifetimeSecs)
+	plan.PortalSessionLifetimeSecs = types.Int64Value(result.Data.PortalSessionLifetimeSecs)
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *GoogleAuthProviderResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data GoogleAuthProviderResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	_, err := r.client.doRequest("DELETE", "/google_auth_providers/"+data.ID.ValueString(), nil)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete Google auth provider: %s", err))
-		return
-	}
+	// The Firezone API has no DELETE endpoint for Google auth providers.
+	// Remove from Terraform state only; the provider must be deleted manually via the admin portal.
 }
 
 func (r *GoogleAuthProviderResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

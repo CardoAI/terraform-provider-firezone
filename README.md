@@ -120,6 +120,31 @@ export FIREZONE_API_URL="https://firezone-api.us-services.cardoaiapps.com"
 export FIREZONE_API_KEY="your-api-key"
 ```
 
+### Performance / Rate Limiting
+
+The provider paces requests with a token-bucket limiter (shared across all
+resources in a single Terraform run) to respect the Firezone API's per-account
+rate limit. Set the client knobs to match your account's server-side limit.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FIREZONE_RATE_LIMIT_RPS` | `10` | Sustained client request rate (req/sec). Set at or below the account's `api_refill_rate`. |
+| `FIREZONE_RATE_LIMIT_BURST` | `30` | Max back-to-back requests before pacing. Set at or below the account's `api_capacity`. |
+| `FIREZONE_MAX_RETRIES` | `6` | Max retries on `429` / `502` / `503` / `504`. |
+| `FIREZONE_RETRY_MAX_BACKOFF_SECS` | `30` | Cap on exponential backoff between retries. |
+
+```bash
+# Match an account configured with api_refill_rate=1000, api_capacity=20000
+export FIREZONE_RATE_LIMIT_RPS="500"
+export FIREZONE_RATE_LIMIT_BURST="1000"
+```
+
+> **Note:** the Firezone server limit is **per-account**, stored on the account
+> (`limits.api_refill_rate` / `limits.api_capacity`). The portal's
+> `API_REFILL_RATE` / `API_CAPACITY` env vars only set a compile-time default
+> and do **not** override a running release — raise the per-account limit
+> directly to go faster.
+
 ## Resources
 
 ### firezone_actor

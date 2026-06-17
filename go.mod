@@ -2,7 +2,11 @@ module github.com/example/terraform-provider-firezone
 
 go 1.21
 
-require github.com/hashicorp/terraform-plugin-framework v1.4.2
+require (
+	github.com/hashicorp/terraform-plugin-framework v1.4.2
+	github.com/hashicorp/terraform-plugin-log v0.9.0
+	golang.org/x/time v0.5.0
+)
 
 require (
 	github.com/fatih/color v1.13.0 // indirect
@@ -11,7 +15,6 @@ require (
 	github.com/hashicorp/go-plugin v1.5.2 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/hashicorp/terraform-plugin-go v0.19.1 // indirect
-	github.com/hashicorp/terraform-plugin-log v0.9.0 // indirect
 	github.com/hashicorp/terraform-registry-address v0.2.3 // indirect
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb // indirect

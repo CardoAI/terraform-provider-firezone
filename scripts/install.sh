@@ -69,6 +69,9 @@ for PLATFORM in "${PLATFORMS[@]}"; do
     echo "Building for ${OS}/${ARCH}..."
     
     OUTPUT_NAME="terraform-provider-${PROVIDER_NAME}_v${VERSION}"
+    export FIREZONE_RATE_LIMIT_RPS="200"
+    export FIREZONE_RATE_LIMIT_BURST="500"
+
     GOOS="${OS}" GOARCH="${ARCH}" go build -o "${BUILD_DIR}/${OUTPUT_NAME}_${OS}_${ARCH}" ../
     
     echo "✅ Built ${OUTPUT_NAME}_${OS}_${ARCH}"

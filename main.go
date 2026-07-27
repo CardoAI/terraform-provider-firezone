@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/example/terraform-provider-firezone/internal/provider"
+	"github.com/CardoAI/terraform-provider-firezone/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 

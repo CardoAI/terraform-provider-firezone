@@ -1,4 +1,4 @@
-module github.com/example/terraform-provider-firezone
+module github.com/CardoAI/terraform-provider-firezone
 
 go 1.21
 
